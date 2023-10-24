@@ -1,0 +1,26 @@
+{
+	"required": true,
+	"package": "net.almer.avm_mod.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"ExampleMixin",
+		"LeveledCauldronBlockMixin",
+		"CauldronBehaviorMixin",
+		"BlockColorsMixin",
+		"PotionEntityMixin",
+		"StructureBlockRenderMixin",
+		"StructureBlockUnlimit",
+		"NoteBlockMixin",
+		"PigEntityMixin"
+	],
+	"client": [
+		"ItemRendererAccessor",
+		"ItemRendererMixin",
+		"ModelLoaderMixin",
+		"ClientPlayerInteractionManagerMixin",
+		"GameRendererMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

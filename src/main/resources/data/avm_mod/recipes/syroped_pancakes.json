@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "avm_mod:pancake"
+    },
+    "X": {
+      "item": "minecraft:iron_ingot"
+    },
+    "%": {
+      "item": "avm_mod:syrop_bucket"
+    }
+  },
+  "pattern": [
+    " % ",
+    "###",
+    " X "
+  ],
+  "result": {
+    "item": "avm_mod:syroped_pancakes"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:armor_stand"
+    },
+    "X": {
+      "item": "minecraft:golden_boots"
+    },
+    "%": {
+      "item": "minecraft:golden_chestplate"
+    },
+    "&": {
+      "item": "minecraft:golden_leggings"
+    },
+    "$": {
+      "item": "minecraft:golden_helmet"
+    }
+  },
+  "pattern": [
+    " % ",
+    "$#&",
+    " X "
+  ],
+  "result": {
+    "item": "avm_mod:winner_statue"
+  },
+  "show_notification": true
+}

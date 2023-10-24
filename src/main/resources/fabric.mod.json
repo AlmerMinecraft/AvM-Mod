@@ -1,0 +1,40 @@
+{
+	"schemaVersion": 1,
+	"id": "avm_mod",
+	"version": "${version}",
+	"name": "AvM Mod",
+	"description": "The popular \"Animation vs. Minecraft\" franchise is in real Minecraft!",
+	"authors": [
+		"Almer"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/avm_mod/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.almer.avm_mod.AvMMod"
+		],
+		"client": [
+			"net.almer.avm_mod.AvMModClient"
+		],
+		"fabric-datagen": [
+			"net.almer.avm_mod.AvMModDataGenerator"
+		]
+	},
+	"mixins": [
+		"avm_mod.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.14.22",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

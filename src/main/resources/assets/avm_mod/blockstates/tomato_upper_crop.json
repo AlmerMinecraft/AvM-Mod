@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "avm_mod:block/tomato_upper_crop_stage0"
+    },
+    "age=1": {
+      "model": "avm_mod:block/tomato_upper_crop_stage1"
+    },
+    "age=2": {
+      "model": "avm_mod:block/tomato_upper_crop_stage2"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:grass_block"
+    },
+    "X": {
+      "item": "avm_mod:exp_orb"
+    },
+    "%": {
+      "item": "minecraft:nether_star"
+    },
+    "&": {
+      "item": "minecraft:golden_leggings"
+    },
+    "$": {
+      "item": "avm_mod:titan_ravager_horn"
+    },
+    "*": {
+      "item": "minecraft:dragon_egg"
+    }
+  },
+  "pattern": [
+    "%","X","&",
+    "X","#","X",
+    "*","X","$"
+  ],
+  "result": {
+    "item": "avm_mod:game_icon"
+  },
+  "show_notification": true
+}

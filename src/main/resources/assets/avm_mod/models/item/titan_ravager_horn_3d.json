@@ -1,0 +1,35 @@
+{
+	"credit": "Made with Blockbench",
+	"texture_size": [20, 20],
+	"textures": {
+		"0": "avm_mod:item/titan_ravager_horn",
+		"particle": "avm_mod:item/titan_ravager_horn"
+	},
+	"elements": [
+		{
+			"from": [6.8, 3.6, 8.4],
+			"to": [8.8, 11.6, 12.4],
+			"faces": {
+				"north": {"uv": [3.2, 3.2, 4.8, 9.6], "texture": "#0"},
+				"east": {"uv": [0, 3.2, 3.2, 9.6], "texture": "#0"},
+				"south": {"uv": [8, 3.2, 9.6, 9.6], "texture": "#0"},
+				"west": {"uv": [4.8, 3.2, 8, 9.6], "texture": "#0"},
+				"up": {"uv": [4.8, 3.2, 3.2, 0], "texture": "#0"},
+				"down": {"uv": [6.4, 0, 4.8, 3.2], "texture": "#0"}
+			}
+		},
+		{
+			"from": [7.2, 10.4, 8.8],
+			"to": [8.4, 17.6, 12],
+			"faces": {
+				"north": {"uv": [3.2, 3.2, 4.8, 9.6], "texture": "#0"},
+				"east": {"uv": [0, 3.2, 3.2, 9.6], "texture": "#0"},
+				"south": {"uv": [8, 3.2, 9.6, 9.6], "texture": "#0"},
+				"west": {"uv": [4.8, 3.2, 8, 9.6], "texture": "#0"},
+				"up": {"uv": [4.8, 3.2, 3.2, 0], "texture": "#0"},
+				"down": {"uv": [6.4, 0, 4.8, 3.2], "texture": "#0"}
+			}
+		}
+	],
+	"display": {}
+}

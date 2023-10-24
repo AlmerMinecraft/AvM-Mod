@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/tinted_cross",
+  "textures": {
+    "cross": "avm_mod:block/tomato_upper_crop_stage2"
+  }
+}

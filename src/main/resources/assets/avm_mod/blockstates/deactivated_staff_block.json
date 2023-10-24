@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "level=0":{
+      "model": "avm_mod:block/deactivated_staff_block"
+    },
+    "level=1":{
+      "model": "avm_mod:block/deactivated_staff_block"
+    },
+    "level=2":{
+      "model": "avm_mod:block/deactivated_staff_block"
+    },
+    "level=3":{
+      "model": "avm_mod:block/activated_staff_block"
+    }
+  }
+}

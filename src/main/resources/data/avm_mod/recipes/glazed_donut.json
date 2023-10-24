@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "avm_mod:chocolate_bucket"
+    },
+    {
+      "item": "avm_mod:donut"
+    }
+  ],
+  "result": {
+    "item": "avm_mod:glazed_donut"
+  },
+  "show_notification": true
+}

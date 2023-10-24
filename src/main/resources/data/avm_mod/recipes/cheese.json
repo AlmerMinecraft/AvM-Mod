@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "avm_mod:cheese_bucket"
+    }
+  ],
+  "result": {
+    "item": "avm_mod:cheese"
+  },
+  "show_notification": true
+}

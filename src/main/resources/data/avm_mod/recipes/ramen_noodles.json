@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:kelp"
+    },
+    {
+      "item": "minecraft:dried_kelp"
+    },
+    {
+      "item": "minecraft:egg"
+    },
+    {
+      "item": "minecraft:bowl"
+    },
+    {
+      "item": "avm_mod:noodles"
+    },
+    {
+      "item": "avm_mod:broth_bucket"
+    }
+  ],
+  "result": {
+    "item": "avm_mod:ramen_noodles"
+  },
+  "show_notification": true
+}

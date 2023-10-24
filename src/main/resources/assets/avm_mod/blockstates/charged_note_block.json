@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "avm_mod:block/charged_note_block"
+    }
+  }
+}

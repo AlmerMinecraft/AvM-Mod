@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "avm_mod:block/winner_statue" },
+    "facing=east": { "model": "avm_mod:block/winner_statue", "y": 90 },
+    "facing=south": { "model": "avm_mod:block/winner_statue", "y": 180 },
+    "facing=west": { "model": "avm_mod:block/winner_statue", "y": 270 }
+  }
+}

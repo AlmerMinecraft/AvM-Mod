@@ -1,0 +1,28 @@
+{
+  "electric_guitar": {
+    "subtitle": "sounds.avm_mod.electric_guitar",
+    "sounds": [
+      "avm_mod:electric_guitar"
+    ]
+  },
+  "flute_music": {
+    "subtitle": "sounds.avm_mod.flute_music",
+    "sounds": [
+      "avm_mod:flute_music"
+    ]
+  },
+  "green_jam": {
+    "subtitle": "sounds.avm_mod.green_jam",
+    "sounds": [
+      "avm_mod:green_jam"
+    ]
+  },
+  "jazzy_note_blocks": {
+    "sounds": [
+      {
+      "name": "avm_mod:jazzy_note_blocks",
+        "stream": true
+    }
+    ]
+  }
+}

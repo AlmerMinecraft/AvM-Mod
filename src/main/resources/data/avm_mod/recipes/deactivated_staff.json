@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "avm_mod:staff_rod"
+    },
+    "X": {
+      "item": "avm_mod:staff_head"
+    }
+  },
+  "pattern": [
+    "X",
+    "#",
+    "#"
+  ],
+  "result": {
+    "item": "avm_mod:deactivated_staff"
+  },
+  "show_notification": true
+}

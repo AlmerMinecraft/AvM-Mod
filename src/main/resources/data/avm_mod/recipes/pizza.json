@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "avm_mod:batter"
+    },
+    "X": {
+      "item": "avm_mod:tomato"
+    },
+    "%": {
+      "item": "avm_mod:cheese"
+    }
+  },
+  "pattern": [
+    " % ",
+    "#X#"
+  ],
+  "result": {
+    "item": "avm_mod:pizza"
+  },
+  "show_notification": true
+}
