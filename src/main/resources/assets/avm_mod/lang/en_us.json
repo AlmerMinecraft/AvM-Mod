@@ -33,6 +33,13 @@
   "entity.avm_mod.living_furnace": "Living furnace",
   "entity.avm_mod.titan_ravager": "Titan ravager",
   "entity.avm_mod.super_pig": "Super pig",
+  "entity.avm_mod.dark_zombie": "Dark zombie",
+  "entity.avm_mod.dark_skeleton": "Dark skeleton",
+  "entity.avm_mod.dark_creeper": "Dark creeper",
+  "entity.avm_mod.dark_spider": "Dark spider",
+  "entity.avm_mod.dark_phantom": "Dark phantom",
+  "entity.avm_mod.dark_enderman": "Dark enderman",
+  "entity.avm_mod.dark_warden": "Dark warden",
   "item.avm_mod.sugar_bucket": "Sugar bucket",
   "item.avm_mod.syrop_bucket": "Syrop bucket",
   "item.avm_mod.pancake": "Pancake",
@@ -73,5 +80,12 @@
   "block.avm_mod.winner_statue": "Winner statue",
   "item.avm_mod.game_icon": "Game icon",
   "gui.avm_mod.game_icon_mode1": "Current mode: Further hand",
-  "gui.avm_mod.game_icon_mode2": "Current mode: Flying"
+  "gui.avm_mod.game_icon_mode2": "Current mode: Flying",
+  "gui.avm_mod.game_icon_mode3": "Current mode: Absorption",
+  "gui.avm_mod.game_icon_mode4": "Current mode: Dark helper",
+  "gui.avm_mod.absorped": "Successfully absorpted ",
+  "gui.avm_mod.remain": ". Absorptions remaining: ",
+  "gui.avm_mod.cant_absorp": "Unable to absorp this mob",
+  "gui.avm_mod.fail_summon_empty": "You haven't any absorpted entities",
+  "gui.avm_mod.limit": "You are over the absorption limit"
 }

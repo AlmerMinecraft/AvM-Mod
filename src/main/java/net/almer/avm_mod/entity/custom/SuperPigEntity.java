@@ -1,8 +1,6 @@
 package net.almer.avm_mod.entity.custom;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.LeavesBlock;
+import net.minecraft.block.*;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -81,7 +79,7 @@ public class SuperPigEntity extends PathAwareEntity implements Angerable{
             for (BlockPos blockPos : BlockPos.iterate(MathHelper.floor(box.minX), MathHelper.floor(box.minY), MathHelper.floor(box.minZ), MathHelper.floor(box.maxX), MathHelper.floor(box.maxY), MathHelper.floor(box.maxZ))) {
                 BlockState blockState = this.getWorld().getBlockState(blockPos);
                 Block block = blockState.getBlock();
-                if (!(block instanceof LeavesBlock)) continue;
+                if (!(block instanceof LeavesBlock) || !(block instanceof FenceBlock) || !(block instanceof FenceGateBlock)) continue;
                 bl = this.getWorld().breakBlock(blockPos, true, this) || bl;
             }
             if (!bl && this.isOnGround()) {

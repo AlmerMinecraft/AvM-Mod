@@ -12,7 +12,7 @@
       "item": "minecraft:nether_star"
     },
     "&": {
-      "item": "minecraft:golden_leggings"
+      "item": "minecraft:echo_shard"
     },
     "$": {
       "item": "avm_mod:titan_ravager_horn"
@@ -22,9 +22,9 @@
     }
   },
   "pattern": [
-    "%","X","&",
-    "X","#","X",
-    "*","X","$"
+    "%X&",
+    "X#X",
+    "*X$"
   ],
   "result": {
     "item": "avm_mod:game_icon"

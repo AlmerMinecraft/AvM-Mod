@@ -33,6 +33,13 @@
   "entity.avm_mod.living_furnace": "Живая печь",
   "entity.avm_mod.titan_ravager": "Титан-разоритель",
   "entity.avm_mod.super_pig": "Супер свинья",
+  "entity.avm_mod.dark_zombie": "Тёмный зомби",
+  "entity.avm_mod.dark_skeleton": "Тёмный скелет",
+  "entity.avm_mod.dark_creeper": "Тёмный крипер",
+  "entity.avm_mod.dark_spider": "Тёмный паук",
+  "entity.avm_mod.dark_phantom": "Тёмный фантом",
+  "entity.avm_mod.dark_enderman": "Тёмный эндермен",
+  "entity.avm_mod.dark_warden": "Тёмный хранитель",
   "item.avm_mod.sugar_bucket": "Ведро сахара",
   "item.avm_mod.syrop_bucket": "Ведро сиропа",
   "item.avm_mod.pancake": "Блин",
@@ -73,5 +80,12 @@
   "block.avm_mod.winner_statue": "Статуэтка победителя",
   "item.avm_mod.game_icon": "Иконка игры",
   "gui.avm_mod.game_icon_mode1": "Выбранный режим: Удлинённая рука",
-  "gui.avm_mod.game_icon_mode2": "Выбранный режим: Полёт"
+  "gui.avm_mod.game_icon_mode2": "Выбранный режим: Полёт",
+  "gui.avm_mod.game_icon_mode3": "Выбранный режим: Поглощение",
+  "gui.avm_mod.game_icon_mode4": "Выбранный режим: Тёмный помощник",
+  "gui.avm_mod.absorped": "Успешно поглощён ",
+  "gui.avm_mod.remain": ". Осталось поглощений: ",
+  "gui.avm_mod.cant_absorp": "Невозможно поглотить этого моба",
+  "gui.avm_mod.fail_summon_empty": "У Вас нет ни одного поглощённого моба",
+  "gui.avm_mod.limit": "Вы превысили лимит поглощений"
 }

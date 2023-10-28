@@ -5,6 +5,8 @@ import net.almer.avm_mod.client.screen.PowerfulStaffScreen;
 import net.almer.avm_mod.effect.ModEffect;
 import net.almer.avm_mod.entity.ModEntities;
 import net.almer.avm_mod.entity.custom.*;
+import net.almer.avm_mod.entity.custom.dark.DarkSkeletonEntity;
+import net.almer.avm_mod.entity.custom.dark.DarkZombieEntity;
 import net.almer.avm_mod.item.ModItem;
 import net.almer.avm_mod.item.ModItemGroup;
 import net.almer.avm_mod.item.custom.PowerfulStaffItem;
@@ -37,6 +39,8 @@ public class AvMMod implements ModInitializer {
 		FabricDefaultAttributeRegistry.register(ModEntities.LIVING_FURNACE, LivingFurnaceEntity.createAttributes());
 		FabricDefaultAttributeRegistry.register(ModEntities.TITAN_RAVAGER, TitanRavagerEntity.createRavagerAttributes());
 		FabricDefaultAttributeRegistry.register(ModEntities.SUPER_PIG, SuperPigEntity.createAttributes());
+		FabricDefaultAttributeRegistry.register(ModEntities.DARK_ZOMBIE, DarkZombieEntity.createZombieAttributes());
+		FabricDefaultAttributeRegistry.register(ModEntities.DARK_SKELETON, DarkSkeletonEntity.createAbstractSkeletonAttributes());
 		ModifyLootTable.modifyLootTables();
 		Registry.register(Registries.SOUND_EVENT, ModSound.FLUTE_MUSIC, ModSound.FLUTE_MUSIC_EVENT);
 		Registry.register(Registries.SOUND_EVENT, ModSound.ELECTRIC_GUITAR, ModSound.ELECTRIC_GUITAR_EVENT);

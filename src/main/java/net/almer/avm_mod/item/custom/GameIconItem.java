@@ -28,6 +28,7 @@ public class GameIconItem extends Item {
         super(settings);
     }
     public static PlayerEntity getPlayer(){
+        player = MinecraftClient.getInstance().player;
         return player;
     }
     @Override

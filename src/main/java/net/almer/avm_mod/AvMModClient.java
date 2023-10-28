@@ -3,6 +3,10 @@ package net.almer.avm_mod;
 import net.almer.avm_mod.block.ModBlock;
 import net.almer.avm_mod.entity.ModEntities;
 import net.almer.avm_mod.entity.client.*;
+import net.almer.avm_mod.entity.client.dark.DarkSkeletonModel;
+import net.almer.avm_mod.entity.client.dark.DarkSkeletonRenderer;
+import net.almer.avm_mod.entity.client.dark.DarkZombieModel;
+import net.almer.avm_mod.entity.client.dark.DarkZombieRenderer;
 import net.almer.avm_mod.entity.custom.LivingBrewingStandEntity;
 import net.almer.avm_mod.item.ModItem;
 import net.almer.avm_mod.item.custom.PowerfulStaffItem;
@@ -47,6 +51,8 @@ public class AvMModClient implements ClientModInitializer {
     public static final EntityModelLayer MODEL_FURNACE_LAYER = new EntityModelLayer(new Identifier(AvMMod.MOD_ID, "living_furnace"), "main");
     public static final EntityModelLayer TITAN_RAVAGER_LAYER = new EntityModelLayer(new Identifier(AvMMod.MOD_ID, "titan_ravager"), "main");
     public static final EntityModelLayer SUPER_PIG_LAYER = new EntityModelLayer(new Identifier(AvMMod.MOD_ID, "super_pig"), "main");
+    public static final EntityModelLayer DARK_ZOMBIE_LAYER = new EntityModelLayer(new Identifier(AvMMod.MOD_ID, "dark_zombie"), "main");
+    public static final EntityModelLayer DARK_SKELETON_LAYER = new EntityModelLayer(new Identifier(AvMMod.MOD_ID, "dark_skeleton"), "main");
     public static KeyBinding POWERFUL_STAFF_USE;
     public static KeyBinding POWERFUL_STAFF_USE_1;
     public static KeyBinding POWERFUL_STAFF_USE_2;
@@ -71,11 +77,19 @@ public class AvMModClient implements ClientModInitializer {
         EntityRendererRegistry.register(ModEntities.SUPER_PIG, (context) ->{
             return new SuperPigRenderer(context);
         });
+        EntityRendererRegistry.register(ModEntities.DARK_ZOMBIE, (context) ->{
+            return new DarkZombieRenderer(context);
+        });
+        EntityRendererRegistry.register(ModEntities.DARK_SKELETON, (context) ->{
+            return new DarkSkeletonRenderer(context);
+        });
         EntityModelLayerRegistry.registerModelLayer(MODEL_CHEST_LAYER, LivingChestModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(MODEL_BREWING_STAND_LAYER, LivingBrewingStandModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(MODEL_FURNACE_LAYER, LivingFurnaceModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(TITAN_RAVAGER_LAYER, TitanRavagerModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(SUPER_PIG_LAYER, SuperPigModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(DARK_ZOMBIE_LAYER, DarkZombieModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(DARK_SKELETON_LAYER, DarkSkeletonModel::getTexturedModelData);
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlock.TOMATO_BOTTOM_CROP, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlock.TOMATO_UPPER_CROP, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlock.DEACTIVATED_STAFF, RenderLayer.getCutout());

@@ -9,40 +9,46 @@ import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.item.Item;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 
+import java.util.List;
+
 @Mixin(NoteBlock.class)
-public abstract class NoteBlockMixin extends AbstractBlock {
+public abstract class NoteBlockMixin extends Block {
     public NoteBlockMixin(Settings settings) {
         super(settings);
     }
-
     @Override
-    public void onProjectileHit(World world, BlockState state, BlockHitResult hit, ProjectileEntity projectile) {
-        BlockPos blockPos;
-        if (world.isThundering() && projectile instanceof TridentEntity && ((TridentEntity) projectile).hasChanneling() && world.isSkyVisible(blockPos = hit.getBlockPos())) {
-            LightningEntity lightningEntity = EntityType.LIGHTNING_BOLT.create(world);
-            if (lightningEntity != null) {
-                lightningEntity.refreshPositionAfterTeleport(Vec3d.ofBottomCenter(blockPos.up()));
-                Entity entity = projectile.getOwner();
-                lightningEntity.setChanneler(entity instanceof ServerPlayerEntity ? (ServerPlayerEntity) entity : null);
-                world.spawnEntity(lightningEntity);
-            }
-            world.playSound(null, blockPos, SoundEvents.ITEM_TRIDENT_THUNDER, SoundCategory.WEATHER, 5.0f, 1.0f);
-        }
-    }
-
-    @Override
-    public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        if(entity instanceof LightningEntity){
+    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        Box box = new Box(pos).expand(0.5);
+        List projectiles = world.getEntitiesByClass(ProjectileEntity.class, box, e->e.isAlive());
+        List entityList = world.getEntitiesByClass(LightningEntity.class, box, e->e.isAlive());
+        if(!entityList.isEmpty()){
             world.setBlockState(pos, ModBlock.CHARGED_NOTE_BLOCK.getDefaultState());
         }
-        super.onEntityCollision(state, world, pos, entity);
+        if(!projectiles.isEmpty()) {
+            for (int j = 0; j < projectiles.size(); j++) {
+                ProjectileEntity projectile = (ProjectileEntity)projectiles.get(j);
+                if (world.isThundering() && projectile instanceof TridentEntity && ((TridentEntity) projectile).hasChanneling() && world.isSkyVisible(pos)) {
+                    LightningEntity lightningEntity = EntityType.LIGHTNING_BOLT.create(world);
+                    if (lightningEntity != null) {
+                        lightningEntity.refreshPositionAfterTeleport(Vec3d.ofBottomCenter(pos.up()));
+                        Entity entity = projectile.getOwner();
+                        lightningEntity.setChanneler(entity instanceof ServerPlayerEntity ? (ServerPlayerEntity) entity : null);
+                        world.spawnEntity(lightningEntity);
+                    }
+                    world.playSound(null, pos, SoundEvents.ITEM_TRIDENT_THUNDER, SoundCategory.WEATHER, 5.0f, 1.0f);
+                }
+            }
+        }
     }
 }

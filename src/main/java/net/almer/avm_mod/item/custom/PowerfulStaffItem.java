@@ -9,6 +9,9 @@ import com.mojang.brigadier.context.CommandContextBuilder;
 import net.almer.avm_mod.AvMMod;
 import net.almer.avm_mod.AvMModClient;
 import net.almer.avm_mod.client.screen.PowerfulStaffScreen;
+import net.almer.avm_mod.entity.ModEntities;
+import net.almer.avm_mod.entity.custom.dark.DarkSkeletonEntity;
+import net.almer.avm_mod.entity.custom.dark.DarkZombieEntity;
 import net.almer.avm_mod.item.ModItem;
 import net.almer.avm_mod.network.packet.AddCommandsC2SPacket;
 import net.minecraft.block.Blocks;
@@ -29,6 +32,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.mob.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.StackReference;
 import net.minecraft.item.*;
@@ -53,20 +57,26 @@ import net.minecraft.util.ClickType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.event.InputEvent;
 import java.security.Key;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class PowerfulStaffItem extends ToolItem {
     private static final String ITEMS_KEY = "Block";
     private static final String BLOCKED_KEY = "Blocked";
     private static final String currentCommandKey = "gui.avm_mod.current_text";
+    private static final int zombieIndex = 1;
+    private static final int skeletonIndex = 2;
+    private static final int creeperIndex = 3;
+    private static final int spiderIndex = 4;
+    private static final int endermanIndex = 5;
+    private static final int phantomIndex = 6;
+    private static final int wardenIndex = 7;
     public static final int MAX_STORAGE = 1;
     private static final int BUNDLE_ITEM_OCCUPANCY = 4;
     private float attackDamage;
@@ -74,8 +84,13 @@ public class PowerfulStaffItem extends ToolItem {
     private Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers;
     private ItemStack staff;
     public static String currentCommand = "";
+    public static int currentMode = 0;
     public static List<String> bufferedCommands;
     NbtList commandList;
+    NbtList entityList;
+    public static List absorpedEntities;
+    private int remains = 10;
+    private int index = 0;
     private static MinecraftServer server;
     public PowerfulStaffItem(ToolMaterial toolMaterial, int attackDamage, float attackSpeed, Settings settings) {
         super(toolMaterial, settings);
@@ -85,9 +100,14 @@ public class PowerfulStaffItem extends ToolItem {
         builder.put(EntityAttributes.GENERIC_ATTACK_DAMAGE, new EntityAttributeModifier(ATTACK_DAMAGE_MODIFIER_ID, "Weapon modifier", (double)this.attackDamage, EntityAttributeModifier.Operation.ADDITION));
         builder.put(EntityAttributes.GENERIC_ATTACK_SPEED, new EntityAttributeModifier(ATTACK_SPEED_MODIFIER_ID, "Weapon modifier", (double)this.attackSpeed, EntityAttributeModifier.Operation.ADDITION));
         this.attributeModifiers = builder.build();
+        index = 0;
     }
     public float getAttackDamage() {
         return this.attackDamage;
+    }
+    public static PlayerEntity getPlayer(){
+        PlayerEntity player = MinecraftClient.getInstance().player;
+        return player;
     }
     @Override
     public Multimap<EntityAttribute, EntityAttributeModifier> getAttributeModifiers(EquipmentSlot slot) {
@@ -160,35 +180,200 @@ public class PowerfulStaffItem extends ToolItem {
                 }
             }
         }
+        if(hasBlocks(stack, ModItem.GAME_ICON) && entity.isPlayer()){
+            PlayerEntity player = (PlayerEntity) entity;
+            NbtCompound nbtCompound = stack.getOrCreateNbt();
+            this.entityList = nbtCompound.getList("Absorbed", NbtElement.COMPOUND_TYPE);
+            if(!nbtCompound.contains("Absorbed") || (nbtCompound.contains("Absorbed") && nbtCompound.getList("Absorbed", NbtElement.COMPOUND_TYPE).isEmpty())){
+                nbtCompound.put("Absorbed", new NbtList());
+                this.entityList = new NbtList();
+                index = 0;
+                this.addPlaceholder(this.staff);
+            }
+            if(index >= 10){
+                index = 0;
+            }
+            if(!player.getAbilities().creativeMode) {
+                if (player.getMainHandStack().isOf(ModItem.GAME_ICON) && currentMode == 1) {
+                    player.getAbilities().allowFlying = true;
+                } else {
+                    player.getAbilities().flying = false;
+                    player.getAbilities().allowFlying = false;
+                }
+            }
+            if(AvMModClient.POWERFUL_STAFF_USE.isPressed()){
+                if(AvMModClient.POWERFUL_STAFF_USE_1.isPressed()){
+                    currentMode = 0;
+                    player.sendMessage(Text.translatable("gui.avm_mod.game_icon_mode1"), true);
+                }
+                else if(AvMModClient.POWERFUL_STAFF_USE_2.isPressed()){
+                    currentMode = 1;
+                    player.sendMessage(Text.translatable("gui.avm_mod.game_icon_mode2"), true);
+                }
+                else if(AvMModClient.POWERFUL_STAFF_USE_3.isPressed()){
+                    currentMode = 2;
+                    player.sendMessage(Text.translatable("gui.avm_mod.game_icon_mode3"), true);
+                }
+                else if(AvMModClient.POWERFUL_STAFF_USE_4.isPressed()){
+                    currentMode = 3;
+                    player.sendMessage(Text.translatable("gui.avm_mod.game_icon_mode4"), true);
+                }
+            }
+        }
     }
-
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         if (hasBlocks(user.getMainHandStack(), Items.COMMAND_BLOCK) && user.isCreativeLevelTwoOp()) {
             if (AvMModClient.POWERFUL_STAFF_USE.isPressed()) {
-                PowerfulStaffScreen screen = new PowerfulStaffScreen(this.staff);
-                MinecraftClient.getInstance().setScreenAndRender(screen);
-                screen.addPlayer(user);
-                screen.addCommands(bufferedCommands);
-                NbtCompound nbtCompound = this.staff.getOrCreateNbt();
-                if (!nbtCompound.contains("Commands")) {
-                    nbtCompound.put("Commands", new NbtList());
+                long time = user.getWorld().getTimeOfDay();
+                while(user.getWorld().getTimeOfDay() != time + 10) {
+                    PowerfulStaffScreen screen = new PowerfulStaffScreen(this.staff);
+                    MinecraftClient.getInstance().setScreenAndRender(screen);
+                    screen.addPlayer(user);
+                    screen.addCommands(bufferedCommands);
+                    NbtCompound nbtCompound = this.staff.getOrCreateNbt();
+                    if (!nbtCompound.contains("Commands")) {
+                        nbtCompound.put("Commands", new NbtList());
+                    }
+                    this.commandList = nbtCompound.getList("Commands", NbtElement.COMPOUND_TYPE);
+                    TypedActionResult.success(user.getMainHandStack());
                 }
-                this.commandList = nbtCompound.getList("Commands", NbtElement.COMPOUND_TYPE);
-                TypedActionResult.success(user.getMainHandStack());
             } else {
                 if (currentCommand != "" && !AvMModClient.POWERFUL_STAFF_USE.isPressed()) {
-                    if (currentCommand.startsWith("/")) {
-                        String readyCommand = currentCommand.substring(1);
-                        MinecraftClient.getInstance().player.networkHandler.sendChatCommand(readyCommand);
-                    } else {
-                        MinecraftClient.getInstance().player.networkHandler.sendChatCommand(currentCommand);
+                    long time = user.getWorld().getTime();
+                    while(user.getWorld().getTime() != time + 10) {
+                        if (currentCommand.startsWith("/")) {
+                            String readyCommand = currentCommand.substring(1);
+                            MinecraftClient.getInstance().player.networkHandler.sendChatCommand(readyCommand);
+                        } else {
+                            MinecraftClient.getInstance().player.networkHandler.sendChatCommand(currentCommand);
+                        }
                     }
                 }
             }
         }
+        if(hasBlocks(user.getMainHandStack(), ModItem.GAME_ICON)){
+            if(currentMode == 3){
+                Random rand = new Random();
+                NbtCompound nbtCompound = this.staff.getNbt();
+                    if (nbtCompound.getList("Absorbed", NbtElement.COMPOUND_TYPE) != null) {
+                        NbtList list = nbtCompound.getList("Absorbed", NbtElement.COMPOUND_TYPE);
+                        for (int i = 0; i < 10; i++) {
+                            int m = this.entityList.getCompound(i).getInt("Absorb" + i);
+                            if (m == 1 || m == 2 || m == 3 || m == 4 || m == 5 || m == 6 || m == 7) {
+                                if (m == 1) {
+                                    DarkZombieEntity entity = new DarkZombieEntity(ModEntities.DARK_ZOMBIE, world);
+                                    entity.setPos(user.getX() + rand.nextFloat(-3f, 3f), user.getY() + 1, user.getZ() + rand.nextFloat(-3f, 3f));
+                                    world.spawnEntity(entity);
+                                    entity.setOwner(user);
+                                }
+                                if (m == 2) {
+                                    DarkSkeletonEntity entity = new DarkSkeletonEntity(ModEntities.DARK_SKELETON, world);
+                                    entity.setPos(user.getX() + rand.nextFloat(-3f, 3f), user.getY() + 1, user.getZ() + rand.nextFloat(-3f, 3f));
+                                    world.spawnEntity(entity);
+                                    entity.setStackInHand(entity.getActiveHand(), Items.BOW.getDefaultStack());
+                                    entity.setOwner(user);
+                                }
+                                if (m == 3) {
+                                    CreeperEntity entity = new CreeperEntity(EntityType.CREEPER, world);
+                                    entity.setPos(user.getX() + rand.nextFloat(-3f, 3f), user.getY() + 1, user.getZ() + rand.nextFloat(-3f, 3f));
+                                    world.spawnEntity(entity);
+                                }
+                                if (m == 4) {
+                                    SpiderEntity entity = new SpiderEntity(EntityType.SPIDER, world);
+                                    entity.setPos(user.getX() + rand.nextFloat(-3f, 3f), user.getY() + 1, user.getZ() + rand.nextFloat(-3f, 3f));
+                                    world.spawnEntity(entity);
+                                }
+                                if (m == 5) {
+                                    EndermanEntity entity = new EndermanEntity(EntityType.ENDERMAN, world);
+                                    entity.setPos(user.getX() + rand.nextFloat(-3f, 3f), user.getY() + 1, user.getZ() + rand.nextFloat(-3f, 3f));
+                                    world.spawnEntity(entity);
+                                }
+                                if (m == 6) {
+                                    PhantomEntity entity = new PhantomEntity(EntityType.PHANTOM, world);
+                                    entity.setPos(user.getX() + rand.nextFloat(-3f, 3f), user.getY() + 1, user.getZ() + rand.nextFloat(-3f, 3f));
+                                    world.spawnEntity(entity);
+                                }
+                                if (m == 7) {
+                                    WardenEntity entity = new WardenEntity(EntityType.WARDEN, world);
+                                    entity.setPos(user.getX() + rand.nextFloat(-3f, 3f), user.getY() + 1, user.getZ() + rand.nextFloat(-3f, 3f));
+                                    world.spawnEntity(entity);
+                                }
+                                NbtCompound placeholder = new NbtCompound();
+                                placeholder.putInt("Absorb" + i, 0);
+                                list.set(i, placeholder);
+                                remains = 10;
+                                index = 0;
+                            }
+                            else {
+                                user.sendMessage(Text.translatable("gui.avm_mod.fail_summon_empty"), true);
+                            }
+                    }
+                }
+            }
+            user.getItemCooldownManager().set(this, getUseDuration(user.getStackInHand(hand)));
+        }
         return TypedActionResult.fail(user.getMainHandStack());
     }
+    public int getUseDuration(ItemStack itemStack){
+        return 10;
+    }
+    @Override
+    public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
+        if(hasBlocks(stack, ModItem.GAME_ICON) && currentMode == 2){
+            NbtCompound nbtCompound = this.staff.getOrCreateNbt();
+            this.entityList = nbtCompound.getList("Absorbed", NbtElement.COMPOUND_TYPE);
+            if(remains > 0) {
+                remains--;
+                NbtList list = nbtCompound.getList("Absorbed", NbtElement.COMPOUND_TYPE);
+                absorpedEntities = new ArrayList();
+                if (entity instanceof ZombieEntity) {
+                    absorpedEntities.add(zombieIndex);
+                    this.addMob(this.staff, zombieIndex, user);
+                    entity.discard();
+                    user.sendMessage(Text.translatable("gui.avm_mod.absorped").append(entity.getDisplayName()).append(Text.translatable("gui.avm_mod.remain").append(String.valueOf(remains))), true);
+                } else if (entity instanceof SkeletonEntity) {
+                    absorpedEntities.add(skeletonIndex);
+                    this.addMob(this.staff, skeletonIndex, user);
+                    entity.discard();
+                    user.sendMessage(Text.translatable("gui.avm_mod.absorped").append(entity.getDisplayName()).append(Text.translatable("gui.avm_mod.remain").append(String.valueOf(remains))), true);
+                } else if (entity instanceof CreeperEntity) {
+                    absorpedEntities.add(creeperIndex);
+                    this.addMob(this.staff, creeperIndex, user);
+                    entity.discard();
+                    user.sendMessage(Text.translatable("gui.avm_mod.absorped").append(entity.getDisplayName()).append(Text.translatable("gui.avm_mod.remain").append(String.valueOf(remains))), true);
+                } else if (entity instanceof PhantomEntity) {
+                    absorpedEntities.add(phantomIndex);
+                    this.addMob(this.staff, phantomIndex, user);
+                    entity.discard();
+                    user.sendMessage(Text.translatable("gui.avm_mod.absorped").append(entity.getDisplayName()).append(Text.translatable("gui.avm_mod.remain").append(String.valueOf(remains))), true);
+                } else if (entity instanceof SpiderEntity) {
+                    absorpedEntities.add(spiderIndex);
+                    this.addMob(this.staff, spiderIndex, user);
+                    entity.discard();
+                    user.sendMessage(Text.translatable("gui.avm_mod.absorped").append(entity.getDisplayName()).append(Text.translatable("gui.avm_mod.remain").append(String.valueOf(remains))), true);
+                } else if (entity instanceof EndermanEntity) {
+                    absorpedEntities.add(endermanIndex);
+                    this.addMob(this.staff, endermanIndex, user);
+                    entity.discard();
+                    user.sendMessage(Text.translatable("gui.avm_mod.absorped").append(entity.getDisplayName()).append(Text.translatable("gui.avm_mod.remain").append(String.valueOf(remains))), true);
+                } else if (entity instanceof WardenEntity) {
+                    absorpedEntities.add(wardenIndex);
+                    this.addMob(this.staff, wardenIndex, user);
+                    entity.discard();
+                    user.sendMessage(Text.translatable("gui.avm_mod.absorped").append(entity.getDisplayName()).append(Text.translatable("gui.avm_mod.remain").append(String.valueOf(remains))), true);
+                } else {
+                    remains++;
+                    index--;
+                    user.sendMessage(Text.translatable("gui.avm_mod.cant_absorp"), true);
+                    return ActionResult.FAIL;
+                }
+            }
+            user.getItemCooldownManager().set(this, getUseDuration(user.getStackInHand(hand)));
+        }
+        return ActionResult.FAIL;
+    }
+
     private ParseResults<ServerCommandSource> parse(String command, PlayerEntity player) {
         MinecraftServer server = player.getServer();
         CommandDispatcher<ServerCommandSource> commandDispatcher = server.getCommandManager().getDispatcher();
@@ -233,6 +418,42 @@ public class PowerfulStaffItem extends ToolItem {
                     }
                 }
             }
+        }
+        return Optional.of(itemStack);
+    }
+    private Optional<ItemStack> addMob(ItemStack stack, int mobIndex, PlayerEntity player){
+        NbtCompound nbtCompound = stack.getOrCreateNbt();
+        NbtList list = nbtCompound.getList("Absorbed", NbtElement.COMPOUND_TYPE);
+        NbtCompound nbtCompound2 = list.getCompound(0);
+        ItemStack itemStack = ItemStack.fromNbt(nbtCompound2);
+        if(list.size() <= 10 && index < 10 && index >= 0) {
+            NbtCompound nbtCompound3 = new NbtCompound();
+            nbtCompound3.putInt("Absorb" + index, mobIndex);
+            list.set(index, nbtCompound3);
+            this.entityList = list;
+            index++;
+        }
+        else{
+            player.sendMessage(Text.translatable("gui.avm_mod.limit"), true);
+        }
+
+        return Optional.of(itemStack);
+    }
+    private Optional<ItemStack> addPlaceholder(ItemStack stack){
+        NbtCompound nbtCompound = stack.getOrCreateNbt();
+        NbtList list = nbtCompound.getList("Absorbed", NbtElement.COMPOUND_TYPE);
+        NbtCompound nbtCompound2 = list.getCompound(0);
+        ItemStack itemStack = ItemStack.fromNbt(nbtCompound2);
+        for (int i = 0; i < 10; i++) {
+            NbtCompound placeholder = new NbtCompound();
+            placeholder.putInt("Absorb" + i, 0);
+            list.add(placeholder);
+            if(list.size() > 10){
+                for(int j = 10; j < list.size(); j++){
+                    list.remove(j);
+                }
+            }
+            this.entityList = list;
         }
         return Optional.of(itemStack);
     }
@@ -383,7 +604,10 @@ public class PowerfulStaffItem extends ToolItem {
             return 7;
         }
         if(PowerfulStaffItem.hasBlocks(stack, Items.COMMAND_BLOCK)){
-            return 9;
+            return 11;
+        }
+        if(PowerfulStaffItem.hasBlocks(stack, ModItem.GAME_ICON)){
+            return 13;
         }
         else{
             return 0;
