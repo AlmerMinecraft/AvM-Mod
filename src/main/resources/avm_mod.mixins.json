@@ -11,13 +11,25 @@
 		"StructureBlockRenderMixin",
 		"StructureBlockUnlimit",
 		"NoteBlockMixin",
-		"PigEntityMixin"
+		"PigEntityMixin",
+		"ChestStateManagerMixin",
+		"ForgingScreenHandlerMixin",
+		"InventoryValidationMixin",
+		"ItemMixin",
+		"LivingEntityMixin",
+		"PlayerEntityInteractionHandlerMixin",
+		"PlayerEntityMixin",
+		"ScreenHandlerMixin",
+		"ServerPlayerInteractionManagerMixin",
+		"ServerPlayNetworkHandlerMixin",
+		"VehicleInventoryValidationMixin"
 	],
 	"client": [
 		"ItemRendererAccessor",
 		"ItemRendererMixin",
 		"ModelLoaderMixin",
-		"ClientPlayerInteractionManagerMixin"
+		"ClientPlayerInteractionManagerMixin",
+		"GameRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
