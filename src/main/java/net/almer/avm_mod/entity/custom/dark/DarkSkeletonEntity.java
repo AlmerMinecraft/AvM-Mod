@@ -25,6 +25,7 @@ import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.RangedWeaponItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.world.ServerWorld;
@@ -40,7 +41,20 @@ import java.util.EnumSet;
 
 public class DarkSkeletonEntity extends TameableEntity implements RangedAttackMob {
     private final ModAttackBow<DarkSkeletonEntity> bowAttackGoal = new ModAttackBow<DarkSkeletonEntity>(this, 1.0, 20, 15.0f);
-    private final MeleeAttackGoal meleeAttackGoal = new MeleeAttackGoal(this, 1.2, false);
+    private final MeleeAttackGoal meleeAttackGoal = new MeleeAttackGoal(this, 1.2, false){
+
+        @Override
+        public void stop() {
+            super.stop();
+            setAttacking(false);
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            setAttacking(true);
+        }
+    };
     @Override
     protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
         return 1.74f;
@@ -129,6 +143,17 @@ public class DarkSkeletonEntity extends TameableEntity implements RangedAttackMo
 
     protected PersistentProjectileEntity createArrowProjectile(ItemStack arrow, float damageModifier) {
         return ProjectileUtil.createArrowProjectile(this, arrow, damageModifier);
+    }
+    @Override
+    public boolean canUseRangedWeapon(RangedWeaponItem weapon) {
+        return weapon == Items.BOW;
+    }
+    @Override
+    public void equipStack(EquipmentSlot slot, ItemStack stack) {
+        super.equipStack(slot, stack);
+        if (!this.getWorld().isClient) {
+            this.updateAttackType();
+        }
     }
     @Nullable
     @Override

@@ -2,8 +2,7 @@ package net.almer.avm_mod.entity;
 
 import net.almer.avm_mod.AvMMod;
 import net.almer.avm_mod.entity.custom.*;
-import net.almer.avm_mod.entity.custom.dark.DarkSkeletonEntity;
-import net.almer.avm_mod.entity.custom.dark.DarkZombieEntity;
+import net.almer.avm_mod.entity.custom.dark.*;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
@@ -41,6 +40,22 @@ public class ModEntities {
             Registries.ENTITY_TYPE, new Identifier(AvMMod.MOD_ID, "dark_skeleton"),
             FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, DarkSkeletonEntity::new)
                     .dimensions(EntityDimensions.fixed(0.6f, 1.95f)).build());
+    public static final EntityType<DarkCreeperEntity> DARK_CREEPER = Registry.register(
+            Registries.ENTITY_TYPE, new Identifier(AvMMod.MOD_ID, "dark_creeper"),
+            FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, DarkCreeperEntity::new)
+                    .dimensions(EntityDimensions.fixed(0.6f, 1.7f)).build());
+    public static final EntityType<DarkSpiderEntity> DARK_SPIDER = Registry.register(
+            Registries.ENTITY_TYPE, new Identifier(AvMMod.MOD_ID, "dark_spider"),
+            FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, DarkSpiderEntity::new)
+                    .dimensions(EntityDimensions.fixed(1.4f, 0.9f)).build());
+    public static final EntityType<DarkEndermanEntity> DARK_ENDERMAN = Registry.register(
+            Registries.ENTITY_TYPE, new Identifier(AvMMod.MOD_ID, "dark_enderman"),
+            FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, DarkEndermanEntity::new)
+                    .dimensions(EntityDimensions.fixed(0.6f, 2.9f)).build());
+    public static final EntityType<DarkPhantomEntity> DARK_PHANTOM = Registry.register(
+            Registries.ENTITY_TYPE, new Identifier(AvMMod.MOD_ID, "dark_phantom"),
+            FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, DarkPhantomEntity::new)
+                    .dimensions(EntityDimensions.fixed(0.9f, 0.5f)).build());
     public static void register(){
         AvMMod.LOGGER.info("Registering entities for: " + AvMMod.MOD_ID);
     }

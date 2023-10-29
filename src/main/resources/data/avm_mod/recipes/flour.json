@@ -1,14 +1,16 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "minecraft:shapeless",
   "category": "misc",
   "key": {
     "#": {
       "item": "minecraft:wheat"
     }
   },
-  "pattern": [
-    "#","#"
-  ],
+  "key": {
+    "#": {
+      "item": "minecraft:wheat"
+    }
+  },
   "result": {
     "item": "avm_mod:flour"
   },

@@ -39,6 +39,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
@@ -46,6 +47,7 @@ import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.function.Predicate;
 
 public class ChargedNoteBlock extends Block {
@@ -64,13 +66,20 @@ public class ChargedNoteBlock extends Block {
 
     public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
         if (!oldState.isOf(state.getBlock())) {
+            Box box = new Box(pos).expand(1.5);
+            List<LightningEntity> lightnings = world.getEntitiesByClass(LightningEntity.class, box, e->e.isAlive());
+            if(!lightnings.isEmpty()){
+                for(int i = 0; i < lightnings.size(); i++){
+                    lightnings.get(i).discard();
+                }
+            }
             this.trySpawnEntity(world, pos);
         }
     }
     private void trySpawnEntity(World world, BlockPos pos) {
         BlockPattern.Result result = this.getGuitarPattern().searchAround(world, pos);
         if (result != null) {
-            ItemEntity itemEntity = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), ModItem.GUITAR.getDefaultStack());
+            ItemEntity itemEntity = new ItemEntity(world, pos.getX(), pos.getY() - 1, pos.getZ(), ModItem.GUITAR.getDefaultStack());
             if (itemEntity != null) {
                 spawnEntity(world, result, itemEntity, result.translate(0, 2, 0).getBlockPos());
             }

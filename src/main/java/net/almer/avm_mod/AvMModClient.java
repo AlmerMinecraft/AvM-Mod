@@ -3,10 +3,7 @@ package net.almer.avm_mod;
 import net.almer.avm_mod.block.ModBlock;
 import net.almer.avm_mod.entity.ModEntities;
 import net.almer.avm_mod.entity.client.*;
-import net.almer.avm_mod.entity.client.dark.DarkSkeletonModel;
-import net.almer.avm_mod.entity.client.dark.DarkSkeletonRenderer;
-import net.almer.avm_mod.entity.client.dark.DarkZombieModel;
-import net.almer.avm_mod.entity.client.dark.DarkZombieRenderer;
+import net.almer.avm_mod.entity.client.dark.*;
 import net.almer.avm_mod.entity.custom.LivingBrewingStandEntity;
 import net.almer.avm_mod.item.ModItem;
 import net.almer.avm_mod.item.custom.PowerfulStaffItem;
@@ -34,6 +31,7 @@ import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.render.entity.model.PigEntityModel;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
@@ -53,6 +51,10 @@ public class AvMModClient implements ClientModInitializer {
     public static final EntityModelLayer SUPER_PIG_LAYER = new EntityModelLayer(new Identifier(AvMMod.MOD_ID, "super_pig"), "main");
     public static final EntityModelLayer DARK_ZOMBIE_LAYER = new EntityModelLayer(new Identifier(AvMMod.MOD_ID, "dark_zombie"), "main");
     public static final EntityModelLayer DARK_SKELETON_LAYER = new EntityModelLayer(new Identifier(AvMMod.MOD_ID, "dark_skeleton"), "main");
+    public static final EntityModelLayer DARK_CREEPER_LAYER = new EntityModelLayer(new Identifier(AvMMod.MOD_ID, "dark_creeper"), "main");
+    public static final EntityModelLayer DARK_SPIDER_LAYER = new EntityModelLayer(new Identifier(AvMMod.MOD_ID, "dark_spider"), "main");
+    public static final EntityModelLayer DARK_ENDERMAN_LAYER = new EntityModelLayer(new Identifier(AvMMod.MOD_ID, "dark_enderman"), "main");
+    public static final EntityModelLayer DARK_PHANTOM_LAYER = new EntityModelLayer(new Identifier(AvMMod.MOD_ID, "dark_phantom"), "main");
     public static KeyBinding POWERFUL_STAFF_USE;
     public static KeyBinding POWERFUL_STAFF_USE_1;
     public static KeyBinding POWERFUL_STAFF_USE_2;
@@ -83,6 +85,18 @@ public class AvMModClient implements ClientModInitializer {
         EntityRendererRegistry.register(ModEntities.DARK_SKELETON, (context) ->{
             return new DarkSkeletonRenderer(context);
         });
+        EntityRendererRegistry.register(ModEntities.DARK_CREEPER, (context) ->{
+            return new DarkCreeperRenderer(context);
+        });
+        EntityRendererRegistry.register(ModEntities.DARK_SPIDER, (context) ->{
+            return new DarkSpiderRenderer(context);
+        });
+        EntityRendererRegistry.register(ModEntities.DARK_ENDERMAN, (context) ->{
+            return new DarkEndermanRenderer(context);
+        });
+        EntityRendererRegistry.register(ModEntities.DARK_PHANTOM, (context) ->{
+            return new DarkPhantomRenderer(context);
+        });
         EntityModelLayerRegistry.registerModelLayer(MODEL_CHEST_LAYER, LivingChestModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(MODEL_BREWING_STAND_LAYER, LivingBrewingStandModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(MODEL_FURNACE_LAYER, LivingFurnaceModel::getTexturedModelData);
@@ -90,6 +104,10 @@ public class AvMModClient implements ClientModInitializer {
         EntityModelLayerRegistry.registerModelLayer(SUPER_PIG_LAYER, SuperPigModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(DARK_ZOMBIE_LAYER, DarkZombieModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(DARK_SKELETON_LAYER, DarkSkeletonModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(DARK_CREEPER_LAYER, DarkCreeperModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(DARK_SPIDER_LAYER, DarkSpiderModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(DARK_ENDERMAN_LAYER, DarkEndermanModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(DARK_PHANTOM_LAYER, DarkPhantomModel::getTexturedModelData);
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlock.TOMATO_BOTTOM_CROP, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlock.TOMATO_UPPER_CROP, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlock.DEACTIVATED_STAFF, RenderLayer.getCutout());

@@ -13,7 +13,7 @@
   "itemgroup.avm": "AvM Мод",
   "effect.avm_mod.musicality": "Музыкальность",
   "effect.avm_mod.awakening": "Пробуждение",
-  "item.minecraft.potion.effect.potion_of_musicality": "Зелье музыкальности",
+  "item.minecraft.potion.effect.musicality": "Зелье музыкальности",
   "item.minecraft.potion.effect.awakening": "Зелье пробуждения",
   "item.minecraft.potion.effect.haunted": "Одержимое зелье",
   "item.minecraft.splash_potion.effect.musicality": "Взрывное зелье музыкальности",

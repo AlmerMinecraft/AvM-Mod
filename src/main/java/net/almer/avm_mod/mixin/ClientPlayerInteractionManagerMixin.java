@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerInteractionManager.class)
 public abstract class ClientPlayerInteractionManagerMixin {
-    @Inject(at = @At("HEAD"), method = {"getReachDistance()F"}, cancellable = true)
+    @Inject(at = @At("HEAD"), method = "getReachDistance()F", cancellable = true)
     private void onGetReachDistance(CallbackInfoReturnable<Float> ci)
     {
         if((GameIconItem.MODE_INDEX == 0 && (GameIconItem.getPlayer().getMainHandStack().isOf(ModItem.GAME_ICON) || GameIconItem.getPlayer().getOffHandStack().isOf(ModItem.GAME_ICON))) ||

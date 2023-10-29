@@ -17,8 +17,7 @@
 		"ItemRendererAccessor",
 		"ItemRendererMixin",
 		"ModelLoaderMixin",
-		"ClientPlayerInteractionManagerMixin",
-		"GameRendererMixin"
+		"ClientPlayerInteractionManagerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

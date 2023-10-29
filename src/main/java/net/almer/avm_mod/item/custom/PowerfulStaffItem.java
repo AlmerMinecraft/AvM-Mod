@@ -10,8 +10,7 @@ import net.almer.avm_mod.AvMMod;
 import net.almer.avm_mod.AvMModClient;
 import net.almer.avm_mod.client.screen.PowerfulStaffScreen;
 import net.almer.avm_mod.entity.ModEntities;
-import net.almer.avm_mod.entity.custom.dark.DarkSkeletonEntity;
-import net.almer.avm_mod.entity.custom.dark.DarkZombieEntity;
+import net.almer.avm_mod.entity.custom.dark.*;
 import net.almer.avm_mod.item.ModItem;
 import net.almer.avm_mod.network.packet.AddCommandsC2SPacket;
 import net.minecraft.block.Blocks;
@@ -76,15 +75,12 @@ public class PowerfulStaffItem extends ToolItem {
     private static final int spiderIndex = 4;
     private static final int endermanIndex = 5;
     private static final int phantomIndex = 6;
-    private static final int wardenIndex = 7;
-    public static final int MAX_STORAGE = 1;
-    private static final int BUNDLE_ITEM_OCCUPANCY = 4;
     private float attackDamage;
     private float attackSpeed;
     private Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers;
     private ItemStack staff;
     public static String currentCommand = "";
-    public static int currentMode = 0;
+    public static int currentMode = 1;
     public static List<String> bufferedCommands;
     NbtList commandList;
     NbtList entityList;
@@ -144,7 +140,6 @@ public class PowerfulStaffItem extends ToolItem {
         }
         return true;
     }
-
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         this.staff = stack;
@@ -203,18 +198,14 @@ public class PowerfulStaffItem extends ToolItem {
             }
             if(AvMModClient.POWERFUL_STAFF_USE.isPressed()){
                 if(AvMModClient.POWERFUL_STAFF_USE_1.isPressed()){
-                    currentMode = 0;
-                    player.sendMessage(Text.translatable("gui.avm_mod.game_icon_mode1"), true);
-                }
-                else if(AvMModClient.POWERFUL_STAFF_USE_2.isPressed()){
                     currentMode = 1;
                     player.sendMessage(Text.translatable("gui.avm_mod.game_icon_mode2"), true);
                 }
-                else if(AvMModClient.POWERFUL_STAFF_USE_3.isPressed()){
+                else if(AvMModClient.POWERFUL_STAFF_USE_2.isPressed()){
                     currentMode = 2;
                     player.sendMessage(Text.translatable("gui.avm_mod.game_icon_mode3"), true);
                 }
-                else if(AvMModClient.POWERFUL_STAFF_USE_4.isPressed()){
+                else if(AvMModClient.POWERFUL_STAFF_USE_3.isPressed()){
                     currentMode = 3;
                     player.sendMessage(Text.translatable("gui.avm_mod.game_icon_mode4"), true);
                 }
@@ -225,29 +216,23 @@ public class PowerfulStaffItem extends ToolItem {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         if (hasBlocks(user.getMainHandStack(), Items.COMMAND_BLOCK) && user.isCreativeLevelTwoOp()) {
             if (AvMModClient.POWERFUL_STAFF_USE.isPressed()) {
-                long time = user.getWorld().getTimeOfDay();
-                while(user.getWorld().getTimeOfDay() != time + 10) {
-                    PowerfulStaffScreen screen = new PowerfulStaffScreen(this.staff);
-                    MinecraftClient.getInstance().setScreenAndRender(screen);
-                    screen.addPlayer(user);
-                    screen.addCommands(bufferedCommands);
-                    NbtCompound nbtCompound = this.staff.getOrCreateNbt();
-                    if (!nbtCompound.contains("Commands")) {
-                        nbtCompound.put("Commands", new NbtList());
-                    }
-                    this.commandList = nbtCompound.getList("Commands", NbtElement.COMPOUND_TYPE);
-                    TypedActionResult.success(user.getMainHandStack());
+                PowerfulStaffScreen screen = new PowerfulStaffScreen(this.staff);
+                MinecraftClient.getInstance().setScreenAndRender(screen);
+                screen.addPlayer(user);
+                screen.addCommands(bufferedCommands);
+                NbtCompound nbtCompound = this.staff.getOrCreateNbt();
+                if (!nbtCompound.contains("Commands")) {
+                    nbtCompound.put("Commands", new NbtList());
                 }
+                this.commandList = nbtCompound.getList("Commands", NbtElement.COMPOUND_TYPE);
+                TypedActionResult.success(user.getMainHandStack());
             } else {
                 if (currentCommand != "" && !AvMModClient.POWERFUL_STAFF_USE.isPressed()) {
-                    long time = user.getWorld().getTime();
-                    while(user.getWorld().getTime() != time + 10) {
-                        if (currentCommand.startsWith("/")) {
-                            String readyCommand = currentCommand.substring(1);
-                            MinecraftClient.getInstance().player.networkHandler.sendChatCommand(readyCommand);
-                        } else {
-                            MinecraftClient.getInstance().player.networkHandler.sendChatCommand(currentCommand);
-                        }
+                    if (currentCommand.startsWith("/")) {
+                        String readyCommand = currentCommand.substring(1);
+                        MinecraftClient.getInstance().player.networkHandler.sendChatCommand(readyCommand);
+                    } else {
+                        MinecraftClient.getInstance().player.networkHandler.sendChatCommand(currentCommand);
                     }
                 }
             }
@@ -275,29 +260,28 @@ public class PowerfulStaffItem extends ToolItem {
                                     entity.setOwner(user);
                                 }
                                 if (m == 3) {
-                                    CreeperEntity entity = new CreeperEntity(EntityType.CREEPER, world);
+                                    DarkCreeperEntity entity = new DarkCreeperEntity(ModEntities.DARK_CREEPER, world);
                                     entity.setPos(user.getX() + rand.nextFloat(-3f, 3f), user.getY() + 1, user.getZ() + rand.nextFloat(-3f, 3f));
                                     world.spawnEntity(entity);
+                                    entity.setOwner(user);
                                 }
                                 if (m == 4) {
-                                    SpiderEntity entity = new SpiderEntity(EntityType.SPIDER, world);
+                                    DarkSpiderEntity entity = new DarkSpiderEntity(ModEntities.DARK_SPIDER, world);
                                     entity.setPos(user.getX() + rand.nextFloat(-3f, 3f), user.getY() + 1, user.getZ() + rand.nextFloat(-3f, 3f));
                                     world.spawnEntity(entity);
+                                    entity.setOwner(user);
                                 }
                                 if (m == 5) {
-                                    EndermanEntity entity = new EndermanEntity(EntityType.ENDERMAN, world);
+                                    DarkEndermanEntity entity = new DarkEndermanEntity(ModEntities.DARK_ENDERMAN, world);
                                     entity.setPos(user.getX() + rand.nextFloat(-3f, 3f), user.getY() + 1, user.getZ() + rand.nextFloat(-3f, 3f));
                                     world.spawnEntity(entity);
+                                    entity.setOwner(user);
                                 }
                                 if (m == 6) {
-                                    PhantomEntity entity = new PhantomEntity(EntityType.PHANTOM, world);
+                                    DarkPhantomEntity entity = new DarkPhantomEntity(ModEntities.DARK_PHANTOM, world);
                                     entity.setPos(user.getX() + rand.nextFloat(-3f, 3f), user.getY() + 1, user.getZ() + rand.nextFloat(-3f, 3f));
                                     world.spawnEntity(entity);
-                                }
-                                if (m == 7) {
-                                    WardenEntity entity = new WardenEntity(EntityType.WARDEN, world);
-                                    entity.setPos(user.getX() + rand.nextFloat(-3f, 3f), user.getY() + 1, user.getZ() + rand.nextFloat(-3f, 3f));
-                                    world.spawnEntity(entity);
+                                    entity.setOwner(user);
                                 }
                                 NbtCompound placeholder = new NbtCompound();
                                 placeholder.putInt("Absorb" + i, 0);
@@ -311,12 +295,12 @@ public class PowerfulStaffItem extends ToolItem {
                     }
                 }
             }
-            user.getItemCooldownManager().set(this, getUseDuration(user.getStackInHand(hand)));
         }
+        user.getItemCooldownManager().set(this, getUseDuration(user.getStackInHand(hand)));
         return TypedActionResult.fail(user.getMainHandStack());
     }
     public int getUseDuration(ItemStack itemStack){
-        return 10;
+        return 30;
     }
     @Override
     public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
@@ -357,11 +341,6 @@ public class PowerfulStaffItem extends ToolItem {
                     this.addMob(this.staff, endermanIndex, user);
                     entity.discard();
                     user.sendMessage(Text.translatable("gui.avm_mod.absorped").append(entity.getDisplayName()).append(Text.translatable("gui.avm_mod.remain").append(String.valueOf(remains))), true);
-                } else if (entity instanceof WardenEntity) {
-                    absorpedEntities.add(wardenIndex);
-                    this.addMob(this.staff, wardenIndex, user);
-                    entity.discard();
-                    user.sendMessage(Text.translatable("gui.avm_mod.absorped").append(entity.getDisplayName()).append(Text.translatable("gui.avm_mod.remain").append(String.valueOf(remains))), true);
                 } else {
                     remains++;
                     index--;
@@ -369,8 +348,8 @@ public class PowerfulStaffItem extends ToolItem {
                     return ActionResult.FAIL;
                 }
             }
-            user.getItemCooldownManager().set(this, getUseDuration(user.getStackInHand(hand)));
         }
+        user.getItemCooldownManager().set(this, getUseDuration(user.getStackInHand(hand)));
         return ActionResult.FAIL;
     }
 

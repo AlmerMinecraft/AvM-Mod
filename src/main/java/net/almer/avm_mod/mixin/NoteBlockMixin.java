@@ -1,9 +1,11 @@
 package net.almer.avm_mod.mixin;
 
 import net.almer.avm_mod.block.ModBlock;
+import net.almer.avm_mod.item.ModItem;
 import net.minecraft.block.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.TridentEntity;
@@ -19,36 +21,44 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
-@Mixin(NoteBlock.class)
-public abstract class NoteBlockMixin extends Block {
-    public NoteBlockMixin(Settings settings) {
-        super(settings);
+@Mixin(LightningEntity.class)
+public abstract class NoteBlockMixin extends Entity {
+    public NoteBlockMixin(EntityType<?> type, World world) {
+        super(type, world);
     }
-    @Override
-    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        Box box = new Box(pos).expand(0.5);
-        List projectiles = world.getEntitiesByClass(ProjectileEntity.class, box, e->e.isAlive());
-        List entityList = world.getEntitiesByClass(LightningEntity.class, box, e->e.isAlive());
-        if(!entityList.isEmpty()){
-            world.setBlockState(pos, ModBlock.CHARGED_NOTE_BLOCK.getDefaultState());
+    private BlockPos getAffectedBlockPos() {
+        Vec3d vec3d = this.getPos();
+        return BlockPos.ofFloored(vec3d.x, vec3d.y - 1.0E-6, vec3d.z);
+    }
+    private void cooldown(int duration, BlockPos pos){
+        double ticking = this.getWorld().getTime();
+        while((this.getWorld().getTime() - ticking) == duration){
+            ItemEntity entity = new ItemEntity(this.getWorld(), pos.getX(), pos.getY(), pos.getZ(), ModItem.GUITAR.getDefaultStack());
+            entity.refreshPositionAndAngles((double)pos.getX() + 0.5, (double)pos.getY() + 0.05, (double)pos.getZ() + 0.5, 0.0F, 0.0F);
+            this.getWorld().spawnEntity(entity);
         }
-        if(!projectiles.isEmpty()) {
-            for (int j = 0; j < projectiles.size(); j++) {
-                ProjectileEntity projectile = (ProjectileEntity)projectiles.get(j);
-                if (world.isThundering() && projectile instanceof TridentEntity && ((TridentEntity) projectile).hasChanneling() && world.isSkyVisible(pos)) {
-                    LightningEntity lightningEntity = EntityType.LIGHTNING_BOLT.create(world);
-                    if (lightningEntity != null) {
-                        lightningEntity.refreshPositionAfterTeleport(Vec3d.ofBottomCenter(pos.up()));
-                        Entity entity = projectile.getOwner();
-                        lightningEntity.setChanneler(entity instanceof ServerPlayerEntity ? (ServerPlayerEntity) entity : null);
-                        world.spawnEntity(lightningEntity);
-                    }
-                    world.playSound(null, pos, SoundEvents.ITEM_TRIDENT_THUNDER, SoundCategory.WEATHER, 5.0f, 1.0f);
-                }
-            }
+    }
+    private void powerNoteBlock() {
+        BlockPos blockPos = BlockPos.ofFloored(this.getAffectedBlockPos().getX(), this.getAffectedBlockPos().getY() - 1, this.getAffectedBlockPos().getZ());
+        BlockPos blockPos1 = this.getAffectedBlockPos();
+        BlockState blockState = this.getWorld().getBlockState(blockPos);
+        BlockState blockState1 = this.getWorld().getBlockState(blockPos1);
+        if (blockState1.isOf(Blocks.NOTE_BLOCK)) {
+            this.getWorld().setBlockState(blockPos1, ModBlock.CHARGED_NOTE_BLOCK.getDefaultState());
+            cooldown(10, blockPos);
         }
+        else if(blockState.isOf(Blocks.NOTE_BLOCK)){
+            this.getWorld().setBlockState(blockPos, ModBlock.CHARGED_NOTE_BLOCK.getDefaultState());
+        }
+    }
+    @Inject(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LightningEntity;powerLightningRod()V"))
+    public void tick(CallbackInfo ci){
+        this.powerNoteBlock();
     }
 }

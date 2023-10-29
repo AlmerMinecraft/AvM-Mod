@@ -11,6 +11,12 @@ base {
 }
 
 repositories {
+	maven {
+		url "https://maven.jamieswhiteshirt.com/libs-release"
+		content {
+			includeGroup "com.jamieswhiteshirt"
+		}
+	}
 }
 
 loom {
@@ -45,6 +51,7 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	include modImplementation("com.jamieswhiteshirt:reach-entity-attributes:2.4.0")
 }
 processResources {
 	inputs.property "version", project.version
@@ -82,6 +89,11 @@ publishing {
 		}
 	}
 	repositories{
-
+		maven {
+			url "https://maven.jamieswhiteshirt.com/libs-release"
+			content {
+				includeGroup "com.jamieswhiteshirt"
+			}
+		}
 	}
 }
