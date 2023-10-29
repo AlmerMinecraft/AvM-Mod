@@ -26,7 +26,7 @@ public class ModBlock {
     public static final Block TOMATO_UPPER_CROP = Registry.register(Registries.BLOCK, new Identifier(AvMMod.MOD_ID, "tomato_upper_crop"),
             new TomatoUpperCropBlock(FabricBlockSettings.copyOf(Blocks.CARROTS)));
     public static final Block DEACTIVATED_STAFF = Registry.register(Registries.BLOCK, new Identifier(AvMMod.MOD_ID, "deactivated_staff_block"),
-            new DeactivatedStaffBlock(AbstractBlock.Settings.create().mapColor(MapColor.LIGHT_GRAY).strength(-1.0f, 3600000.0f).dropsNothing().allowsSpawning(Blocks::never)));
+            new DeactivatedStaffBlock(AbstractBlock.Settings.create().mapColor(MapColor.LIGHT_GRAY).dropsNothing().allowsSpawning(Blocks::never)));
     public static final Block WINNER_STATUE = Registry.register(Registries.BLOCK, new Identifier(AvMMod.MOD_ID, "winner_statue"),
             new WinnerStatueBlock(FabricBlockSettings.copyOf(Blocks.FLOWER_POT).breakInstantly().drops(new Identifier("avm_mod:winner_statue")).nonOpaque()));
     private static Block registerBlock(String id, Block block){
