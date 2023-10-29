@@ -1,5 +1,6 @@
 package net.almer.avm_mod.entity.custom;
 
+import net.almer.avm_mod.entity.LivingBlocks;
 import net.almer.avm_mod.entity.ModEntities;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -44,7 +45,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class LivingBrewingStandEntity extends TameableEntity implements VehicleInventory {
+public class LivingBrewingStandEntity extends TameableEntity implements LivingBlocks {
     List playerList;
     double distance = 5;
     @Nullable
@@ -198,9 +199,7 @@ public class LivingBrewingStandEntity extends TameableEntity implements VehicleI
         }
         super.tick();
     }
-
     @Nullable
-    @Override
     public Identifier getLootTableId() {
         return this.lootTableId;
     }

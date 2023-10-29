@@ -1,7 +1,6 @@
 package net.almer.avm_mod.entity.client;
 
 import net.almer.avm_mod.AvMModClient;
-import net.almer.avm_mod.entity.custom.LivingBrewingStandEntity;
 import net.almer.avm_mod.entity.custom.TitanRavagerEntity;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;

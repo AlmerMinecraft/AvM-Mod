@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.almer.avm_mod.entity.LivingBlocks;
 import net.almer.avm_mod.entity.ModEntities;
 import net.minecraft.SharedConstants;
 import net.minecraft.block.Blocks;
@@ -55,7 +56,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LivingFurnaceEntity extends TameableEntity implements VehicleInventory {
+public class LivingFurnaceEntity extends TameableEntity implements LivingBlocks {
     List playerList;
     double distance = 5;
     @Nullable
@@ -189,9 +190,7 @@ public class LivingFurnaceEntity extends TameableEntity implements VehicleInvent
         }
         return super.interactMob(player, hand);
     }
-
     @Nullable
-    @Override
     public Identifier getLootTableId() {
         return this.lootTableId;
     }

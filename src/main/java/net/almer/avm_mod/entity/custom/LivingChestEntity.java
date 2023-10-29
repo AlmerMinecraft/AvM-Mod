@@ -1,5 +1,6 @@
 package net.almer.avm_mod.entity.custom;
 
+import net.almer.avm_mod.entity.LivingBlocks;
 import net.almer.avm_mod.entity.ModEntities;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Blocks;
@@ -48,7 +49,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class LivingChestEntity extends TameableEntity implements VehicleInventory {
+public class LivingChestEntity extends TameableEntity implements LivingBlocks {
     List playerList;
     double distance = 5;
     @Nullable
@@ -118,11 +119,9 @@ public class LivingChestEntity extends TameableEntity implements VehicleInventor
     }
 
     @Nullable
-    @Override
     public Identifier getLootTableId() {
         return this.lootTableId;
     }
-
     @Override
     public void setLootTableId(@Nullable Identifier lootTableId) {
         this.lootTableId = lootTableId;
