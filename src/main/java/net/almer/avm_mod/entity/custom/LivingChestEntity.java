@@ -54,11 +54,13 @@ public class LivingChestEntity extends TameableEntity implements LivingBlocks {
     double distance = 5;
     @Nullable
     private Identifier lootTableId;
+    private final World world;
     private long lootSeed;
     protected SimpleInventory items;
     private DefaultedList<ItemStack> inventory = DefaultedList.ofSize(27, ItemStack.EMPTY);
     public LivingChestEntity(EntityType<? extends TameableEntity> entityType, World world) {
         super(entityType, world);
+        this.world = world;
     }
 
     @Override
@@ -170,7 +172,10 @@ public class LivingChestEntity extends TameableEntity implements LivingBlocks {
     @Override
     public void markDirty() {
     }
-
+    @Override
+    public World getWorld(){
+        return this.world;
+    }
     @Override
     public boolean canPlayerUse(PlayerEntity player) {
         return true;

@@ -83,6 +83,7 @@ public class LivingFurnaceEntity extends TameableEntity implements LivingBlocks 
     int cookTimeTotal;
     private final Object2IntOpenHashMap<Identifier> recipesUsed = new Object2IntOpenHashMap();
     private final RecipeManager.MatchGetter<Inventory, ? extends AbstractCookingRecipe> matchGetter;
+    private final World world;
     protected final PropertyDelegate propertyDelegate = new PropertyDelegate() {
 
         @Override
@@ -133,6 +134,7 @@ public class LivingFurnaceEntity extends TameableEntity implements LivingBlocks 
     public LivingFurnaceEntity(EntityType<? extends TameableEntity> entityType, World world) {
         super(entityType, world);
         this.matchGetter = RecipeManager.createCachedMatchGetter(RecipeType.SMELTING);
+        this.world = world;
     }
 
     @Override
@@ -153,6 +155,10 @@ public class LivingFurnaceEntity extends TameableEntity implements LivingBlocks 
     @Override
     public EntityView method_48926() {
         return this.getWorld();
+    }
+    @Override
+    public World getWorld(){
+        return this.world;
     }
 
     @Nullable

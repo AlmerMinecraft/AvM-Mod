@@ -63,6 +63,7 @@ public class LivingBrewingStandEntity extends TameableEntity implements LivingBl
     private DefaultedList<ItemStack> inventory = DefaultedList.ofSize(5, ItemStack.EMPTY);
     int brewTime;
     private boolean[] slotsEmptyLastTick;
+    private final World world;
     private Item itemBrewing;
     int fuel;
     protected final PropertyDelegate propertyDelegate = new PropertyDelegate(){
@@ -100,6 +101,7 @@ public class LivingBrewingStandEntity extends TameableEntity implements LivingBl
     };
     public LivingBrewingStandEntity(EntityType<? extends TameableEntity> entityType, World world) {
         super(entityType, world);
+        this.world = world;
     }
 
     @Override
@@ -212,6 +214,10 @@ public class LivingBrewingStandEntity extends TameableEntity implements LivingBl
     @Override
     public void setLootTableSeed(long lootTableSeed) {
         this.lootSeed = lootTableSeed;
+    }
+    @Override
+    public World getWorld(){
+        return this.world;
     }
 
     @Override

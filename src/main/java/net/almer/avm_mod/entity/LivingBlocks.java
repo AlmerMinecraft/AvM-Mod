@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.PiglinBrain;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.vehicle.VehicleInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.StackReference;
@@ -116,5 +117,25 @@ public interface LivingBlocks extends Inventory, NamedScreenHandlerFactory {
         if (!stack.isEmpty() && stack.getCount() > this.getMaxCountPerStack()) {
             stack.setCount(this.getMaxCountPerStack());
         }
+    }
+    default public StackReference getInventoryStackReference(final int slot) {
+        if (slot >= 0 && slot < this.size()) {
+            return new StackReference(){
+                @Override
+                public ItemStack get() {
+                    return LivingBlocks.this.getInventoryStack(slot);
+                }
+
+                @Override
+                public boolean set(ItemStack stack) {
+                    LivingBlocks.this.setInventoryStack(slot, stack);
+                    return true;
+                }
+            };
+        }
+        return StackReference.EMPTY;
+    }
+    default public boolean canPlayerAccess(PlayerEntity player) {
+        return !this.isRemoved() && this.getPos().isInRange(player.getPos(), 8.0);
     }
 }
