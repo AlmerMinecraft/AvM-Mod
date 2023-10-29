@@ -77,7 +77,7 @@ public class LivingChestEntity extends TameableEntity implements VehicleInventor
 
     @Override
     public EntityView method_48926() {
-        return super.getWorld();
+        return this.getWorld();
     }
 
     @Nullable

@@ -151,7 +151,7 @@ public class LivingFurnaceEntity extends TameableEntity implements VehicleInvent
 
     @Override
     public EntityView method_48926() {
-        return super.getWorld();
+        return this.getWorld();
     }
 
     @Nullable

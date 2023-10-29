@@ -118,7 +118,7 @@ public class LivingBrewingStandEntity extends TameableEntity implements VehicleI
 
     @Override
     public EntityView method_48926() {
-        return super.getWorld();
+        return this.getWorld();
     }
 
     @Nullable
