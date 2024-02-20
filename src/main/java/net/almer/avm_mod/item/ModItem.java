@@ -28,6 +28,7 @@ public class ModItem {
     public static final Item LIVING_BREWING_STAND_SPAWN_EGG = register("living_brewing_stand_spawn_egg", new SpawnEggItem(ModEntities.LIVING_BREWING_STAND, 0x6b625c, 0xFfe015, new FabricItemSettings()));
     public static final Item LIVING_FURNACE_SPAWN_EGG = register("living_furnace_spawn_egg", new SpawnEggItem(ModEntities.LIVING_FURNACE, 0x5c6979, 0x21272f, new FabricItemSettings()));
     public static final Item TITAN_RAVAGER_SPAWN_EGG = register("titan_ravager_spawn_egg", new SpawnEggItem(ModEntities.TITAN_RAVAGER, 0x213881, 0x211F2C, new FabricItemSettings()));
+    public static final Item BEEPER_SPAWN_EGG = register("beeper_spawn_egg", new SpawnEggItem(ModEntities.CREEPER_BEE, 0x1EAF10, 0x244536, new FabricItemSettings()));
     public static final Item RAMEN_NOODLES = register("ramen_noodles", new Item(new FabricItemSettings().food(ModFoodComponent.RAMEN_NOODLES).maxCount(1)));
     public static final Item BROTH_BUCKET = register("broth_bucket", new BrothBucketItem(Fluids.EMPTY, new FabricItemSettings().recipeRemainder(Items.BUCKET).maxCount(1)));
     public static final Item FLOUR = register("flour", new Item(new FabricItemSettings()));

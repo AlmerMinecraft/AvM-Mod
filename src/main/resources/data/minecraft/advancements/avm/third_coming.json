@@ -1,0 +1,590 @@
+{
+  "parent": "minecraft:avm/winner",
+  "criteria": {
+    "fried_chicken": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:fried_chicken"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "glazed_donut": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:glazed_donut"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "pizza": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:pizza"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "syroped_pancakes": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:syroped_pancakes"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "burger": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:burger"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "ramen_noodles": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:ramen_noodles"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "staff": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:staff"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "deactivated_staff": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:deactivated_staff"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "staff_rod": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:staff_rod"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "staff_head": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:staff_head"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "electric_guitar": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:electric_guitar"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "flute": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:flute"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "note_book": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:note_book"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "jazzy_note_blocks_disc": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:jazzy_note_blocks_disc"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "broth_bucket": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:broth_bucket"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "sugar_bucket": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:sugar_bucket"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "syrop_bucket": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:syrop_bucket"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "cheese_bucket": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:cheese_bucket"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "oil_bucket": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:oil_bucket"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "batter_bucket": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:batter_bucket"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "chocolate_bucket": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:chocolate_bucket"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "flour": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:flour"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "batter": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:batter"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "raw_noodles": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:raw_noodles"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "noodles": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:noodles"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "pancake": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:pancake"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "syroped_pancakes": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:syroped_pancakes"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "tomato_seeds": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:tomato_seeds"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "tomato": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:tomato"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "cheese": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:cheese"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "breaded_chicken": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:breaded_chicken"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "donut": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:donut"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "titan_ravager_horn": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:titan_ravager_horn"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "exp_orb": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:exp_orb"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "winner_statue": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:winner_statue"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "game_icon": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:game_icon"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "musicality": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:potion"
+            ],
+            "nbt": "{Potion:\"avm_mod:musicality\"}"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "awakening": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:potion"
+            ],
+            "nbt": "{Potion:\"avm_mod:awakening\"}"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.avm_mod.third_coming.description"
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "item": "minecraft:orange_wool"
+    },
+    "title": {
+      "translate": "advancements.avm_mod.third_coming.title"
+    }
+  },
+  "requirements": [
+    [
+      "fried_chicken"
+    ],
+    [
+      "glazed_donut"
+    ],
+    [
+      "pizza"
+    ],
+    [
+      "syroped_pancakes"
+    ],
+    [
+      "burger"
+    ],
+    [
+      "ramen_noodles"
+    ],
+    [
+      "staff"
+    ],
+    [
+      "deactivated_staff"
+    ],
+    [
+      "staff_rod"
+    ],
+    [
+      "staff_head"
+    ],
+    [
+      "electric_guitar"
+    ],
+    [
+      "note_book"
+    ],
+    [
+      "jazzy_note_blocks_disc"
+    ],
+    [
+      "batter"
+    ],
+    [
+      "cheese"
+    ],
+    [
+      "flour"
+    ],
+    [
+      "tomato"
+    ],
+    [
+      "tomato_seeds"
+    ],
+    [
+      "noodles"
+    ],
+    [
+      "raw_noodles"
+    ],
+    [
+      "flute"
+    ],
+    [
+      "pancake"
+    ],
+    [
+      "breaded_chicken"
+    ],
+    [
+      "donut"
+    ],
+    [
+      "winner_statue"
+    ],
+    [
+      "exp_orb"
+    ],
+    [
+      "titan_ravager_horn"
+    ],
+    [
+      "game_icon"
+    ],
+    [
+      "broth_bucket"
+    ],
+    [
+      "syrop_bucket"
+    ],
+    [
+      "sugar_bucket"
+    ],
+    [
+      "cheese_bucket"
+    ],
+    [
+      "oil_bucket"
+    ],
+    [
+      "batter_bucket"
+    ],
+    [
+      "chocolate_bucket"
+    ],
+    [
+      "musicality"
+    ],
+    [
+      "awakening"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

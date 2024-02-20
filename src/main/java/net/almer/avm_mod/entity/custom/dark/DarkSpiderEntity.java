@@ -55,7 +55,6 @@ public class DarkSpiderEntity extends TameableEntity {
         this.targetSelector.add(2, new AttackWithOwnerGoal(this));
         this.targetSelector.add(3, new RevengeGoal(this, new Class[0]));
     }
-    @Override
     public double getMountedHeightOffset() {
         return this.getHeight() * 0.5f;
     }
@@ -182,7 +181,6 @@ public class DarkSpiderEntity extends TameableEntity {
             }
             return super.shouldContinue();
         }
-        @Override
         protected double getSquaredMaxAttackDistance(LivingEntity entity) {
             return 4.0f + entity.getWidth();
         }

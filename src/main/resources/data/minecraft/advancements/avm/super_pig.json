@@ -1,0 +1,36 @@
+{
+  "parent": "minecraft:avm/titan_attack",
+  "criteria": {
+    "killed_pig": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "avm_mod:super_pig"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:player_killed_entity"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.avm_mod.super_pig.description"
+    },
+    "icon": {
+      "item": "minecraft:porkchop"
+    },
+    "title": {
+      "translate": "advancements.avm_mod.super_pig.title"
+    }
+  },
+  "requirements": [
+    [
+      "killed_pig"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

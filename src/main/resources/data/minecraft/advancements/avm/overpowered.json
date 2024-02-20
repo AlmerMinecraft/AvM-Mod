@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:avm/craft_staff",
+  "criteria": {
+    "overpowered": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:game_icon"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.avm_mod.overpowered.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "item": "avm_mod:game_icon"
+    },
+    "title": {
+      "translate": "advancements.avm_mod.overpowered.title"
+    }
+  },
+  "requirements": [
+    [
+      "overpowered"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

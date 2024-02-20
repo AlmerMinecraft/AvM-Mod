@@ -1,5 +1,6 @@
 package net.almer.avm_mod.block.custom;
 
+import com.mojang.serialization.MapCodec;
 import net.almer.avm_mod.util.BrothCauldronBehaviour;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.AbstractCauldronBlock;
@@ -13,7 +14,7 @@ import net.minecraft.world.World;
 import java.util.Map;
 
 public class BrothCauldronBlock extends AbstractCauldronBlock {
-
+    public static final MapCodec<BrothCauldronBlock> CODEC = BrothCauldronBlock.createCodec(BrothCauldronBlock::new);
     public BrothCauldronBlock(Settings settings) {
         super(settings, BrothCauldronBehaviour.BROTH_CAULDRON_BEHAVIOR);
     }
@@ -24,5 +25,9 @@ public class BrothCauldronBlock extends AbstractCauldronBlock {
     @Override
     public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
         return 3;
+    }
+    @Override
+    protected MapCodec<? extends AbstractCauldronBlock> getCodec() {
+        return CODEC;
     }
 }

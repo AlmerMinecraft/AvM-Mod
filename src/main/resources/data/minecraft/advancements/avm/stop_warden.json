@@ -1,0 +1,57 @@
+{
+  "parent": "minecraft:avm/ancient_notes",
+  "criteria": {
+    "flute": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "minecraft:warden",
+              "distance": {
+                "horizontal": {
+                  "min": 0.5,
+                  "max": 40.0
+                }
+              }
+            }
+          }
+        ],
+        "item": {
+          "items": [
+            "avm_mod:flute"
+          ]
+        },
+        "player": {
+          "equipment": {
+            "offhand": {
+              "items": [
+                "avm_mod:note_book"
+              ]
+            }
+          }
+        }
+      },
+      "trigger": "minecraft:using_item"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.avm_mod.stop_warden.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "item": "avm_mod:flute"
+    },
+    "title": {
+      "translate": "advancements.avm_mod.stop_warden.title"
+    }
+  },
+  "requirements": [
+    [
+      "flute"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -280,8 +280,6 @@ public class DarkZombieEntity extends TameableEntity {
     protected void initAttributes() {
         this.getAttributeInstance(EntityAttributes.ZOMBIE_SPAWN_REINFORCEMENTS).setBaseValue(this.random.nextDouble() * (double)0.1f);
     }
-
-    @Override
     public double getHeightOffset() {
         return this.isBaby() ? 0.0 : -0.45;
     }

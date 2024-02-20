@@ -13,11 +13,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Map;
+
 @Mixin(CauldronBehavior.class)
 public interface CauldronBehaviorMixin {
     @Inject(method = "registerBehavior()V", at = @At("HEAD"))
     private static void registerBehavior(CallbackInfo info){
-        CauldronBehavior.WATER_CAULDRON_BEHAVIOR.put(ModItem.RAW_NOODLES, (state, world, pos, player, hand, stack) -> {
+        Map<Item, CauldronBehavior> map = CauldronBehavior.WATER_CAULDRON_BEHAVIOR.map();
+        map.put(ModItem.RAW_NOODLES, (state, world, pos, player, hand, stack) -> {
             if (!world.isClient) {
                 ItemStack item = new ItemStack(ModItem.NOODLES);
                 player.setStackInHand(hand, item);

@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:avm/root",
+  "criteria": {
+    "broth_cauldron": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:broth_bucket"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.avm_mod.chef.description"
+    },
+    "icon": {
+      "item": "minecraft:cauldron"
+    },
+    "title": {
+      "translate": "advancements.avm_mod.chef.title"
+    }
+  },
+  "requirements": [
+    [
+      "broth_cauldron"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

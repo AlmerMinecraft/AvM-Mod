@@ -4,11 +4,14 @@
   "key": {
     "#": {
       "item": "minecraft:iron_ingot"
+    },
+    "*": {
+      "item": "minecraft:nether_star"
     }
   },
   "pattern": [
     "##",
-    " #",
+    "*#",
     "##"
   ],
   "result": {

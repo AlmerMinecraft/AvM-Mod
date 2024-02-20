@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:avm/root",
+  "criteria": {
+    "get_statue": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:winner_statue"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.avm_mod.winner.description"
+    },
+    "icon": {
+      "item": "avm_mod:winner_statue"
+    },
+    "title": {
+      "translate": "advancements.avm_mod.winner.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_statue"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

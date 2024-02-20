@@ -1,0 +1,30 @@
+{
+  "parent": "minecraft:avm/rock_star",
+  "criteria": {
+    "musicality": {
+      "conditions": {
+        "effects": {
+          "avm_mod:musicality": {}
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.avm_mod.sense_of_music.description"
+    },
+    "icon": {
+      "item": "minecraft:light_blue_dye"
+    },
+    "title": {
+      "translate": "advancements.avm_mod.sense_of_music.title"
+    }
+  },
+  "requirements": [
+    [
+      "musicality"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

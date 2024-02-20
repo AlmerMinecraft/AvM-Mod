@@ -7,7 +7,6 @@ import com.google.common.collect.Multimap;
 import net.almer.avm_mod.AvMMod;
 import net.almer.avm_mod.AvMModClient;
 import net.almer.avm_mod.item.ModItem;
-import net.almer.avm_mod.mixin.ClientPlayerInteractionManagerMixin;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;

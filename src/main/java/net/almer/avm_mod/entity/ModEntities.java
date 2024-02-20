@@ -56,6 +56,10 @@ public class ModEntities {
             Registries.ENTITY_TYPE, new Identifier(AvMMod.MOD_ID, "dark_phantom"),
             FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, DarkPhantomEntity::new)
                     .dimensions(EntityDimensions.fixed(0.9f, 0.5f)).build());
+    public static final EntityType<CreeperBeeEntity> CREEPER_BEE = Registry.register(
+            Registries.ENTITY_TYPE, new Identifier(AvMMod.MOD_ID, "beeper"),
+            FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, CreeperBeeEntity::new)
+                    .dimensions(EntityDimensions.fixed(0.7f, 0.6f)).build());
     public static void register(){
         AvMMod.LOGGER.info("Registering entities for: " + AvMMod.MOD_ID);
     }

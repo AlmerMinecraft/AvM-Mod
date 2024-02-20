@@ -24,7 +24,7 @@ abstract class GameRendererMixin implements SynchronousResourceReloader/*, AutoC
         return reachDistance;
     }
 
-    @ModifyConstant(method = "updateTargetedEntity(F)V", constant = @Constant(doubleValue = 3.0))
+    @ModifyConstant(method = "updateTargetedEntity(F)V", constant = @Constant(doubleValue = 1.0))
     private double getActualAttackRange0(final double attackRange) {
         if (this.client.player != null) {
             return AvMMod.getAttackRange(this.client.player, attackRange);

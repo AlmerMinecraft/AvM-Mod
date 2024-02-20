@@ -55,6 +55,7 @@ public class AvMModClient implements ClientModInitializer {
     public static final EntityModelLayer DARK_SPIDER_LAYER = new EntityModelLayer(new Identifier(AvMMod.MOD_ID, "dark_spider"), "main");
     public static final EntityModelLayer DARK_ENDERMAN_LAYER = new EntityModelLayer(new Identifier(AvMMod.MOD_ID, "dark_enderman"), "main");
     public static final EntityModelLayer DARK_PHANTOM_LAYER = new EntityModelLayer(new Identifier(AvMMod.MOD_ID, "dark_phantom"), "main");
+    public static final EntityModelLayer BEEPER_LAYER = new EntityModelLayer(new Identifier(AvMMod.MOD_ID, "beeper"), "main");
     public static KeyBinding POWERFUL_STAFF_USE;
     public static KeyBinding POWERFUL_STAFF_USE_1;
     public static KeyBinding POWERFUL_STAFF_USE_2;
@@ -97,6 +98,9 @@ public class AvMModClient implements ClientModInitializer {
         EntityRendererRegistry.register(ModEntities.DARK_PHANTOM, (context) ->{
             return new DarkPhantomRenderer(context);
         });
+        EntityRendererRegistry.register(ModEntities.CREEPER_BEE, (context) ->{
+            return new CreeperBeeEntityRenderer(context);
+        });
         EntityModelLayerRegistry.registerModelLayer(MODEL_CHEST_LAYER, LivingChestModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(MODEL_BREWING_STAND_LAYER, LivingBrewingStandModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(MODEL_FURNACE_LAYER, LivingFurnaceModel::getTexturedModelData);
@@ -108,27 +112,40 @@ public class AvMModClient implements ClientModInitializer {
         EntityModelLayerRegistry.registerModelLayer(DARK_SPIDER_LAYER, DarkSpiderModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(DARK_ENDERMAN_LAYER, DarkEndermanModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(DARK_PHANTOM_LAYER, DarkPhantomModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(BEEPER_LAYER, CreeperBeeEntityModel::getTexturedModelData);
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlock.TOMATO_BOTTOM_CROP, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlock.TOMATO_UPPER_CROP, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlock.DEACTIVATED_STAFF, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlock.WINNER_STATUE, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlock.DEACTIVATED_STAFF, RenderLayer.getCutout());
 
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "blocked"), (stack, world, entity, seed) ->
                 PowerfulStaffItem.isBlocked(stack) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "copper"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasBlocks(stack, Items.COPPER_BLOCK) ? 1.0f : 0.0f);
+                PowerfulStaffItem.hasAnotherBlocks(stack, Items.COPPER_BLOCK) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "iron"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasBlocks(stack, Items.IRON_BLOCK) ? 1.0f : 0.0f);
+                PowerfulStaffItem.hasAnotherBlocks(stack, Items.IRON_BLOCK) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "gold"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasBlocks(stack, Items.GOLD_BLOCK) ? 1.0f : 0.0f);
+                PowerfulStaffItem.hasAnotherBlocks(stack, Items.GOLD_BLOCK) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "emerald"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasBlocks(stack, Items.EMERALD_BLOCK) ? 1.0f : 0.0f);
+                PowerfulStaffItem.hasAnotherBlocks(stack, Items.EMERALD_BLOCK) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "diamond"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasBlocks(stack, Items.DIAMOND_BLOCK) ? 1.0f : 0.0f);
+                PowerfulStaffItem.hasAnotherBlocks(stack, Items.DIAMOND_BLOCK) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "netherite"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasBlocks(stack, Items.NETHERITE_BLOCK) ? 1.0f : 0.0f);
+                PowerfulStaffItem.hasAnotherBlocks(stack, Items.NETHERITE_BLOCK) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "command"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasBlocks(stack, Items.COMMAND_BLOCK) ? 1.0f : 0.0f);
+                PowerfulStaffItem.hasAnotherBlocks(stack, Items.COMMAND_BLOCK) ? 1.0f : 0.0f);
+        ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "furnace"), (stack, world, entity, seed) ->
+                PowerfulStaffItem.hasAnotherBlocks(stack, Items.FURNACE) ? 1.0f : 0.0f);
+        ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "bone"), (stack, world, entity, seed) ->
+                PowerfulStaffItem.hasAnotherBlocks(stack, Items.BONE_BLOCK) ? 1.0f : 0.0f);
+        ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "magma"), (stack, world, entity, seed) ->
+                PowerfulStaffItem.hasAnotherBlocks(stack, Items.MAGMA_BLOCK) ? 1.0f : 0.0f);
+        ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "tnt"), (stack, world, entity, seed) ->
+                PowerfulStaffItem.hasAnotherBlocks(stack, Items.TNT) ? 1.0f : 0.0f);
+        ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "piston"), (stack, world, entity, seed) ->
+                PowerfulStaffItem.hasAnotherBlocks(stack, Items.PISTON) ? 1.0f : 0.0f);
+        ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "spawner"), (stack, world, entity, seed) ->
+                PowerfulStaffItem.hasAnotherBlocks(stack, Items.SPAWNER) ? 1.0f : 0.0f);
 
         POWERFUL_STAFF_USE = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.avm_mod.staff_use", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "category.avm_mod.keybinds"));
         POWERFUL_STAFF_USE_1 = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.avm_mod.staff_use_1", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V, "category.avm_mod.keybinds"));

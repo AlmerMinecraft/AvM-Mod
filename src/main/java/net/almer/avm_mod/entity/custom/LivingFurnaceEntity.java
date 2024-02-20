@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import net.almer.avm_mod.entity.LivingBlocks;
 import net.almer.avm_mod.entity.ModEntities;
 import net.minecraft.SharedConstants;
@@ -51,10 +52,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LivingFurnaceEntity extends TameableEntity implements LivingBlocks {
     List playerList;
@@ -386,7 +384,7 @@ public class LivingFurnaceEntity extends TameableEntity implements LivingBlocks 
         boolean bl3 = !this.inventory.get(0).isEmpty();
         boolean bl5 = bl4 = !itemStack.isEmpty();
         if (this.isBurning() || bl4 && bl3) {
-            Recipe recipe = bl3 ? (Recipe)this.matchGetter.getFirstMatch(this, world).orElse(null) : null;
+            RecipeEntry recipe = bl3 ? (RecipeEntry)this.matchGetter.getFirstMatch(this, world).orElse(null) : null;
             int i = this.getMaxCountPerStack();
             if (!this.isBurning() && LivingFurnaceEntity.canAcceptRecipeOutput(world.getRegistryManager(), recipe, this.inventory, i)) {
                 this.fuelTime = this.burnTime = this.getFuelTime(itemStack);
@@ -420,43 +418,47 @@ public class LivingFurnaceEntity extends TameableEntity implements LivingBlocks 
         }
         super.tick();
     }
-    private static boolean canAcceptRecipeOutput(DynamicRegistryManager registryManager, @Nullable Recipe<?> recipe, DefaultedList<ItemStack> slots, int count) {
-        if (slots.get(0).isEmpty() || recipe == null) {
+    private static boolean canAcceptRecipeOutput(DynamicRegistryManager registryManager, @Nullable RecipeEntry<?> recipe, DefaultedList<ItemStack> slots, int count) {
+        if (!((ItemStack)slots.get(0)).isEmpty() && recipe != null) {
+            ItemStack itemStack = recipe.value().getResult(registryManager);
+            if (itemStack.isEmpty()) {
+                return false;
+            } else {
+                ItemStack itemStack2 = (ItemStack)slots.get(2);
+                if (itemStack2.isEmpty()) {
+                    return true;
+                } else if (!ItemStack.areItemsEqual(itemStack2, itemStack)) {
+                    return false;
+                } else if (itemStack2.getCount() < count && itemStack2.getCount() < itemStack2.getMaxCount()) {
+                    return true;
+                } else {
+                    return itemStack2.getCount() < itemStack.getMaxCount();
+                }
+            }
+        } else {
             return false;
         }
-        ItemStack itemStack = recipe.getOutput(registryManager);
-        if (itemStack.isEmpty()) {
-            return false;
-        }
-        ItemStack itemStack2 = slots.get(2);
-        if (itemStack2.isEmpty()) {
-            return true;
-        }
-        if (!ItemStack.areItemsEqual(itemStack2, itemStack)) {
-            return false;
-        }
-        if (itemStack2.getCount() < count && itemStack2.getCount() < itemStack2.getMaxCount()) {
-            return true;
-        }
-        return itemStack2.getCount() < itemStack.getMaxCount();
     }
-    private static boolean craftRecipe(DynamicRegistryManager registryManager, @Nullable Recipe<?> recipe, DefaultedList<ItemStack> slots, int count) {
-        if (recipe == null || !LivingFurnaceEntity.canAcceptRecipeOutput(registryManager, recipe, slots, count)) {
+    private static boolean craftRecipe(DynamicRegistryManager registryManager, @Nullable RecipeEntry<?> recipe, DefaultedList<ItemStack> slots, int count) {
+        if (recipe != null && canAcceptRecipeOutput(registryManager, recipe, slots, count)) {
+            ItemStack itemStack = (ItemStack)slots.get(0);
+            ItemStack itemStack2 = recipe.value().getResult(registryManager);
+            ItemStack itemStack3 = (ItemStack)slots.get(2);
+            if (itemStack3.isEmpty()) {
+                slots.set(2, itemStack2.copy());
+            } else if (itemStack3.isOf(itemStack2.getItem())) {
+                itemStack3.increment(1);
+            }
+
+            if (itemStack.isOf(Blocks.WET_SPONGE.asItem()) && !((ItemStack)slots.get(1)).isEmpty() && ((ItemStack)slots.get(1)).isOf(Items.BUCKET)) {
+                slots.set(1, new ItemStack(Items.WATER_BUCKET));
+            }
+
+            itemStack.decrement(1);
+            return true;
+        } else {
             return false;
         }
-        ItemStack itemStack = slots.get(0);
-        ItemStack itemStack2 = recipe.getOutput(registryManager);
-        ItemStack itemStack3 = slots.get(2);
-        if (itemStack3.isEmpty()) {
-            slots.set(2, itemStack2.copy());
-        } else if (itemStack3.isOf(itemStack2.getItem())) {
-            itemStack3.increment(1);
-        }
-        if (itemStack.isOf(Blocks.WET_SPONGE.asItem()) && !slots.get(1).isEmpty() && slots.get(1).isOf(Items.BUCKET)) {
-            slots.set(1, new ItemStack(Items.WATER_BUCKET));
-        }
-        itemStack.decrement(1);
-        return true;
     }
 
     protected int getFuelTime(ItemStack fuel) {
@@ -468,34 +470,42 @@ public class LivingFurnaceEntity extends TameableEntity implements LivingBlocks 
     }
 
     private static int getCookTime(World world, LivingFurnaceEntity furnace) {
-        return furnace.matchGetter.getFirstMatch(furnace, world).map(AbstractCookingRecipe::getCookTime).orElse(200);
+        return (Integer)furnace.matchGetter.getFirstMatch(furnace, world).map((recipe) -> {
+            return ((AbstractCookingRecipe)recipe.value()).getCookingTime();
+        }).orElse(200);
     }
 
     public static boolean canUseAsFuel(ItemStack stack) {
         return AbstractFurnaceBlockEntity.createFuelTimeMap().containsKey(stack.getItem());
     }
-    public void setLastRecipe(@Nullable Recipe<?> recipe) {
+    public void setLastRecipe(@Nullable RecipeEntry<?> recipe) {
         if (recipe != null) {
-            Identifier identifier = recipe.getId();
+            Identifier identifier = recipe.id();
             this.recipesUsed.addTo(identifier, 1);
         }
     }
     public void dropExperienceForRecipesUsed(ServerPlayerEntity player) {
-        List<Recipe<?>> list = this.getRecipesUsedAndDropExperience(player.getServerWorld(), player.getPos());
+        List<RecipeEntry<?>> list = this.getRecipesUsedAndDropExperience(player.getServerWorld(), player.getPos());
         player.unlockRecipes(list);
-        for (Recipe<?> recipe : list) {
-            if (recipe == null) continue;
-            player.onRecipeCrafted(recipe, this.inventory);
+        Iterator var3 = list.iterator();
+
+        while(var3.hasNext()) {
+            RecipeEntry<?> recipeEntry = (RecipeEntry)var3.next();
+            if (recipeEntry != null) {
+                player.onRecipeCrafted(recipeEntry, this.inventory);
+            }
         }
         this.recipesUsed.clear();
     }
+    public List<RecipeEntry<?>> getRecipesUsedAndDropExperience(ServerWorld world, Vec3d pos) {
+        List<RecipeEntry<?>> list = Lists.newArrayList();
+        ObjectIterator var4 = this.recipesUsed.object2IntEntrySet().iterator();
 
-    public List<Recipe<?>> getRecipesUsedAndDropExperience(ServerWorld world, Vec3d pos) {
-        ArrayList<Recipe<?>> list = Lists.newArrayList();
-        for (Object2IntMap.Entry entry : this.recipesUsed.object2IntEntrySet()) {
-            world.getRecipeManager().get((Identifier)entry.getKey()).ifPresent(recipe -> {
-                list.add((Recipe<?>)recipe);
-                LivingFurnaceEntity.dropExperience(world, pos, entry.getIntValue(), ((AbstractCookingRecipe)recipe).getExperience());
+        while(var4.hasNext()) {
+            Object2IntMap.Entry<Identifier> entry = (Object2IntMap.Entry)var4.next();
+            world.getRecipeManager().get((Identifier)entry.getKey()).ifPresent((recipe) -> {
+                list.add(recipe);
+                dropExperience(world, pos, entry.getIntValue(), ((AbstractCookingRecipe)recipe.value()).getExperience());
             });
         }
         return list;

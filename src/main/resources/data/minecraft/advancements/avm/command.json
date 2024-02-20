@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:avm/root",
+  "criteria": {
+    "command": {
+      "conditions": {
+        "item": {
+          "items": [
+            "avm_mod:staff"
+          ],
+          "nbt": "{Block:[{id:\"minecraft:command_block\", Count:1b}]}"
+        }
+      },
+      "trigger": "minecraft:using_item"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.avm_mod.command.description"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "item": "avm_mod:deactivated_staff"
+    },
+    "title": {
+      "translate": "advancements.avm_mod.command.title"
+    }
+  },
+  "requirements": [
+    [
+      "command"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

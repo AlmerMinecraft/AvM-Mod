@@ -1,0 +1,110 @@
+{
+  "parent": "minecraft:avm/chef",
+  "criteria": {
+    "fried_chicken": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:fried_chicken"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "glazed_donut": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:glazed_donut"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "pizza": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:pizza"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "syroped_pancakes": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:syroped_pancakes"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "burger": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:burger"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "ramen_noodles": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:ramen_noodles"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.avm_mod.bon_appetit.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "item": "avm_mod:fried_chicken"
+    },
+    "title": {
+      "translate": "advancements.avm_mod.bon_appetit.title"
+    }
+  },
+  "requirements": [
+    [
+      "fried_chicken"
+    ],
+    [
+      "glazed_donut"
+    ],
+    [
+      "pizza"
+    ],
+    [
+      "syroped_pancakes"
+    ],
+    [
+      "burger"
+    ],
+    [
+      "ramen_noodles"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

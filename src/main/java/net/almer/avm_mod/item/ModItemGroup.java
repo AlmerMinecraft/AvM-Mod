@@ -32,6 +32,7 @@ public class ModItemGroup {
                         entries.add(ModItem.LIVING_BREWING_STAND_SPAWN_EGG);
                         entries.add(ModItem.LIVING_FURNACE_SPAWN_EGG);
                         entries.add(ModItem.TITAN_RAVAGER_SPAWN_EGG);
+                        entries.add(ModItem.BEEPER_SPAWN_EGG);
                         entries.add(ModItem.RAMEN_NOODLES);
                         entries.add(ModItem.BROTH_BUCKET);
                         entries.add(ModItem.SUGAR_BUCKET);

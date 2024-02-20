@@ -215,7 +215,6 @@ public class DarkPhantomEntity extends TameableEntity {
         float f = (entityDimensions.width + 0.2f * (float)0) / entityDimensions.width;
         return entityDimensions.scaled(f);
     }
-    @Override
     public double getMountedHeightOffset() {
         return this.getStandingEyeHeight();
     }

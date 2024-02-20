@@ -1,16 +1,14 @@
 {
   "type": "minecraft:shapeless",
   "category": "misc",
-  "key": {
-    "#": {
+  "ingredients": [
+    {
+      "item": "minecraft:wheat"
+    },
+    {
       "item": "minecraft:wheat"
     }
-  },
-  "key": {
-    "#": {
-      "item": "minecraft:wheat"
-    }
-  },
+  ],
   "result": {
     "item": "avm_mod:flour"
   },

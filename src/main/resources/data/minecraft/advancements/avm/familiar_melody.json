@@ -1,0 +1,47 @@
+{
+  "parent": "minecraft:avm/ancient_notes",
+  "criteria": {
+    "play_jnb": {
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": [
+                  "minecraft:jukebox"
+                ]
+              }
+            }
+          },
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": [
+                "avm_mod:jazzy_note_blocks_disc"
+              ]
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:item_used_on_block"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.avm_mod.familiar_melody.description"
+    },
+    "icon": {
+      "item": "avm_mod:jazzy_note_blocks_disc"
+    },
+    "title": {
+      "translate": "advancements.avm_mod.familiar_melody.title"
+    }
+  },
+  "requirements": [
+    [
+      "play_jnb"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

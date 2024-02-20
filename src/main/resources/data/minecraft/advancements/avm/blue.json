@@ -1,0 +1,40 @@
+{
+  "parent": "minecraft:avm/new_witch",
+  "criteria": {
+    "blue": {
+      "conditions": {
+        "player": {
+          "type_specific": {
+            "type": "player",
+            "advancements": {
+              "minecraft:avm/new_witch": true,
+              "minecraft:avm/bon_appetit": true,
+              "minecraft:avm/chef": true,
+              "minecraft:avm/third_coming": true
+            }
+          }
+        }
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": ""
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "item": "minecraft:light_blue_wool"
+    },
+    "title": {
+      "translate": "advancements.avm_mod.blue.title"
+    }
+  },
+  "requirements": [
+    [
+      "blue"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

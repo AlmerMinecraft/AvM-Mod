@@ -23,12 +23,14 @@ import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.minecraft.advancement.criterion.Criterion;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.ClampedEntityAttribute;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
@@ -53,7 +55,6 @@ public class AvMMod implements ModInitializer {
 			ImmutableMultimap.of(AvMMod.REACH, singleRangeAttributeModifier));
 	public static final EntityAttribute REACH = make("reach", 0.0, -1024.0, 1024.0);
 	public static final EntityAttribute ATTACK_RANGE = make("attack_range", 0.0, -1024.0, 1024.0);
-
 	public static double getReachDistance(final LivingEntity entity, final double baseReachDistance) {
 		@Nullable final var reachDistance = entity.getAttributeInstance(REACH);
 		return (reachDistance != null) ? (baseReachDistance + reachDistance.getValue()) : baseReachDistance;
@@ -118,6 +119,7 @@ public class AvMMod implements ModInitializer {
 		FabricDefaultAttributeRegistry.register(ModEntities.DARK_SPIDER, DarkSpiderEntity.createSpiderAttributes());
 		FabricDefaultAttributeRegistry.register(ModEntities.DARK_ENDERMAN, DarkEndermanEntity.createEndermanAttributes());
 		FabricDefaultAttributeRegistry.register(ModEntities.DARK_PHANTOM, DarkPhantomEntity.createPhantomAttributes());
+		FabricDefaultAttributeRegistry.register(ModEntities.CREEPER_BEE, CreeperBeeEntity.createBeeAttributes());
 		ModifyLootTable.modifyLootTables();
 		Registry.register(Registries.SOUND_EVENT, ModSound.FLUTE_MUSIC, ModSound.FLUTE_MUSIC_EVENT);
 		Registry.register(Registries.SOUND_EVENT, ModSound.ELECTRIC_GUITAR, ModSound.ELECTRIC_GUITAR_EVENT);

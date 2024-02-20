@@ -60,7 +60,6 @@ public class DarkSkeletonEntity extends TameableEntity implements RangedAttackMo
         return 1.74f;
     }
 
-    @Override
     public double getHeightOffset() {
         return -0.6;
     }
@@ -127,8 +126,6 @@ public class DarkSkeletonEntity extends TameableEntity implements RangedAttackMo
             this.goalSelector.add(4, this.meleeAttackGoal);
         }
     }
-
-    @Override
     public void attack(LivingEntity target, float pullProgress) {
         ItemStack itemStack = this.getProjectileType(this.getStackInHand(ProjectileUtil.getHandPossiblyHolding(this, Items.BOW)));
         PersistentProjectileEntity persistentProjectileEntity = this.createArrowProjectile(itemStack, pullProgress);
@@ -183,6 +180,12 @@ public class DarkSkeletonEntity extends TameableEntity implements RangedAttackMo
     public EntityView method_48926() {
         return this.getWorld();
     }
+
+    @Override
+    public void shootAt(LivingEntity target, float pullProgress) {
+
+    }
+
     class ModAttackBow<T extends DarkSkeletonEntity> extends Goal {
         private final T actor;
         private final double speed;
@@ -295,7 +298,7 @@ public class DarkSkeletonEntity extends TameableEntity implements RangedAttackMo
                     ((LivingEntity)this.actor).clearActiveItem();
                 } else if (bl && (i = ((LivingEntity)this.actor).getItemUseTime()) >= 20) {
                     ((LivingEntity)this.actor).clearActiveItem();
-                    ((RangedAttackMob)this.actor).attack(livingEntity, BowItem.getPullProgress(i));
+                    DarkSkeletonEntity.this.attack(livingEntity, BowItem.getPullProgress(i));
                     this.cooldown = this.attackInterval;
                 }
             } else if (--this.cooldown <= 0 && this.targetSeeingTicker >= -60) {

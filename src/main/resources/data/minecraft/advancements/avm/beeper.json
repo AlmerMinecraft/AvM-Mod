@@ -1,0 +1,36 @@
+{
+  "parent": "minecraft:avm/titan_attack",
+  "criteria": {
+    "killed_beeper": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "avm_mod:beeper"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:player_killed_entity"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.avm_mod.beeper.description"
+    },
+    "icon": {
+      "item": "minecraft:creeper_head"
+    },
+    "title": {
+      "translate": "advancements.avm_mod.beeper.title"
+    }
+  },
+  "requirements": [
+    [
+      "killed_beeper"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

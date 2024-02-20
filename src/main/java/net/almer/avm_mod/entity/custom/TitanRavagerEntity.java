@@ -50,6 +50,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -136,7 +137,6 @@ public class TitanRavagerEntity extends PathAwareEntity implements Vibrations {
         return 45;
     }
 
-    @Override
     public double getMountedHeightOffset() {
         return 2.1;
     }
@@ -232,21 +232,22 @@ public class TitanRavagerEntity extends PathAwareEntity implements Vibrations {
     }
     private void roar() {
         if (this.isAlive()) {
-            int var3_5 = 0;
-            List<LivingEntity> list = this.getWorld().getEntitiesByClass(LivingEntity.class, this.getBoundingBox().expand(4.0), IS_NOT_RAVAGER);
-            for (LivingEntity livingEntity : list) {
-                this.knockBack(livingEntity);
+            List<? extends LivingEntity> list = this.getWorld().getEntitiesByClass(LivingEntity.class, this.getBoundingBox().expand(4.0), IS_NOT_RAVAGER);
+            LivingEntity livingEntity;
+            for(Iterator var2 = list.iterator(); var2.hasNext(); this.knockBack(livingEntity)) {
+                livingEntity = (LivingEntity)var2.next();
+                if (!(livingEntity instanceof IllagerEntity)) {
+                    livingEntity.damage(this.getDamageSources().mobAttack(this), 6.0F);
+                }
             }
             Vec3d vec3d = this.getBoundingBox().getCenter();
-            boolean bl = false;
-            while (var3_5 < 40) {
+            for(int i = 0; i < 40; ++i) {
                 double d = this.random.nextGaussian() * 0.2;
                 double e = this.random.nextGaussian() * 0.2;
                 double f = this.random.nextGaussian() * 0.2;
                 this.getWorld().addParticle(ParticleTypes.POOF, vec3d.x, vec3d.y, vec3d.z, d, e, f);
-                ++var3_5;
             }
-            this.emitGameEvent(GameEvent.ENTITY_ROAR);
+            this.emitGameEvent(GameEvent.ENTITY_ACTION);
         }
     }
     private void eat(){
@@ -337,8 +338,6 @@ public class TitanRavagerEntity extends PathAwareEntity implements Vibrations {
         public AttackGoal() {
             super(TitanRavagerEntity.this, 1.0, true);
         }
-
-        @Override
         protected double getSquaredMaxAttackDistance(LivingEntity entity) {
             float f = TitanRavagerEntity.this.getWidth() - 0.1f;
             return f * 2.0f * (f * 2.0f) + entity.getWidth();

@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:avm/redstone",
+  "criteria": {
+    "get_staff": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:staff"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.avm_mod.craft_staff.description"
+    },
+    "icon": {
+      "item": "avm_mod:staff"
+    },
+    "title": {
+      "translate": "advancements.avm_mod.craft_staff.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_staff"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

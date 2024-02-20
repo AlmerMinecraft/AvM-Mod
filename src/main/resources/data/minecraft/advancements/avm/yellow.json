@@ -1,0 +1,40 @@
+{
+  "parent": "minecraft:avm/overpowered",
+  "criteria": {
+    "yellow": {
+      "conditions": {
+        "player": {
+          "type_specific": {
+            "type": "player",
+            "advancements": {
+              "minecraft:avm/overpowered": true,
+              "minecraft:avm/craft_staff": true,
+              "minecraft:avm/redstone": true,
+              "minecraft:avm/third_coming": true
+            }
+          }
+        }
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": ""
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "item": "minecraft:yellow_wool"
+    },
+    "title": {
+      "translate": "advancements.avm_mod.yellow.title"
+    }
+  },
+  "requirements": [
+    [
+      "yellow"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

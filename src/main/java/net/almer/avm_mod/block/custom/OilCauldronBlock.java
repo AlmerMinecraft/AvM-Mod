@@ -1,5 +1,6 @@
 package net.almer.avm_mod.block.custom;
 
+import com.mojang.serialization.MapCodec;
 import net.almer.avm_mod.item.ModItem;
 import net.almer.avm_mod.mixin.LeveledCauldronBlockMixin;
 import net.almer.avm_mod.util.BrothCauldronBehaviour;
@@ -17,6 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class OilCauldronBlock extends AbstractCauldronBlock {
+    public static final MapCodec<OilCauldronBlock> CODEC = OilCauldronBlock.createCodec(OilCauldronBlock::new);
     public OilCauldronBlock(Settings settings) {
         super(settings, BrothCauldronBehaviour.OIL_CAULDRON_BEHAVIOR);
     }
@@ -31,13 +33,18 @@ public class OilCauldronBlock extends AbstractCauldronBlock {
 
     @Override
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        if(!world.isClient){
-            if(world.getBlockState(pos.down(1)) == Blocks.FIRE.getDefaultState()){
-                if(entity instanceof ItemEntity itemEntity && itemEntity.getStack().isOf(ModItem.BREADED_CHICKEN)){
+        if (!world.isClient) {
+            if (world.getBlockState(pos.down(1)) == Blocks.FIRE.getDefaultState()) {
+                if (entity instanceof ItemEntity itemEntity && itemEntity.getStack().isOf(ModItem.BREADED_CHICKEN)) {
                     itemEntity.setStack(ModItem.FRIED_CHICKEN.getDefaultStack());
                 }
             }
         }
+    }
+
+    @Override
+    protected MapCodec<? extends AbstractCauldronBlock> getCodec() {
+        return CODEC;
     }
 
     @Override

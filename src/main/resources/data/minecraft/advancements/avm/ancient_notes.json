@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:avm/root",
+  "criteria": {
+    "get_note_book": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:note_book"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.avm_mod.ancient_notes.description"
+    },
+    "icon": {
+      "item": "avm_mod:note_book"
+    },
+    "title": {
+      "translate": "advancements.avm_mod.ancient_notes.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_note_book"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

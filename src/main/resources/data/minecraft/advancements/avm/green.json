@@ -1,0 +1,42 @@
+{
+  "parent": "minecraft:avm/sense_of_music",
+  "criteria": {
+    "green": {
+      "conditions": {
+        "player": {
+          "type_specific": {
+            "type": "player",
+            "advancements": {
+              "minecraft:avm/sense_of_music": true,
+              "minecraft:avm/rock_star": true,
+              "minecraft:avm/familiar_melody": true,
+              "minecraft:avm/stop_warden": true,
+              "minecraft:avm/ancient_notes": true,
+              "minecraft:avm/third_coming": true
+            }
+          }
+        }
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": ""
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "item": "minecraft:lime_wool"
+    },
+    "title": {
+      "translate": "advancements.avm_mod.green.title"
+    }
+  },
+  "requirements": [
+    [
+      "green"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

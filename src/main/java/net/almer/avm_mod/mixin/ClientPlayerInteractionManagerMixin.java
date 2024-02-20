@@ -16,7 +16,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
     private void onGetReachDistance(CallbackInfoReturnable<Float> ci)
     {
         if((GameIconItem.MODE_INDEX == 0 && (GameIconItem.getPlayer().getMainHandStack().isOf(ModItem.GAME_ICON) || GameIconItem.getPlayer().getOffHandStack().isOf(ModItem.GAME_ICON))) ||
-                (PowerfulStaffItem.currentMode == 0 && PowerfulStaffItem.getPlayer().getMainHandStack().isOf(ModItem.POWERFUL_STAFF))) {
+                (PowerfulStaffItem.getCurrentMode() == 0 && PowerfulStaffItem.getPlayer().getMainHandStack().isOf(ModItem.POWERFUL_STAFF))) {
             ci.setReturnValue(15.0f);
         }
         else{

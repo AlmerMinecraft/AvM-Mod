@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:avm/ancient_notes",
+  "criteria": {
+    "get_guitar": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "avm_mod:electric_guitar"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.avm_mod.rock_star.description"
+    },
+    "icon": {
+      "item": "avm_mod:electric_guitar"
+    },
+    "title": {
+      "translate": "advancements.avm_mod.rock_star.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_guitar"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

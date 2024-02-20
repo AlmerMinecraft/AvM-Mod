@@ -16,6 +16,8 @@ public class ModifyLootTable {
             new Identifier("minecraft", "chests/ancient_city");
     private static final Identifier GRASS_ID =
             new Identifier("minecraft", "blocks/grass");
+    private static final Identifier SPAWNER_ID =
+            new Identifier("minecraft","chests/simple_dungeon");
     public static void modifyLootTables(){
         LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
             if(ANCIENT_CITY_ID.equals(id)){
@@ -34,6 +36,17 @@ public class ModifyLootTable {
                         .rolls(ConstantLootNumberProvider.create(1))
                         .conditionally(RandomChanceLootCondition.builder(0.125f))
                         .with(ItemEntry.builder(ModItem.TOMATO_SEEDS))
+                        .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1.0f, 1.0f)));
+
+                tableBuilder.pool(poolBuilder.build());
+            }
+        });
+        LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
+            if(SPAWNER_ID.equals(id)){
+                LootPool.Builder poolBuilder = LootPool.builder()
+                        .rolls(ConstantLootNumberProvider.create(1))
+                        .conditionally(RandomChanceLootCondition.builder(0.012f))
+                        .with(ItemEntry.builder(ModItem.JAZZY_NOTE_BLOCKS_DISC))
                         .apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1.0f, 1.0f)));
 
                 tableBuilder.pool(poolBuilder.build());

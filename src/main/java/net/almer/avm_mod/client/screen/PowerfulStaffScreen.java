@@ -148,29 +148,29 @@ public class PowerfulStaffScreen extends Screen {
             consoleCommandTextField6.setText(commands.get(5));
         }
     }
-
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        if (this.commandSuggestor1.mouseScrolled(amount)) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        if (this.commandSuggestor1.mouseScrolled(horizontalAmount)) {
             return true;
         }
-        if (this.commandSuggestor2.mouseScrolled(amount)) {
+        if (this.commandSuggestor2.mouseScrolled(horizontalAmount)) {
             return true;
         }
-        if (this.commandSuggestor3.mouseScrolled(amount)) {
+        if (this.commandSuggestor3.mouseScrolled(horizontalAmount)) {
             return true;
         }
-        if (this.commandSuggestor4.mouseScrolled(amount)) {
+        if (this.commandSuggestor4.mouseScrolled(horizontalAmount)) {
             return true;
         }
-        if (this.commandSuggestor5.mouseScrolled(amount)) {
+        if (this.commandSuggestor5.mouseScrolled(horizontalAmount)) {
             return true;
         }
-        if (this.commandSuggestor6.mouseScrolled(amount)) {
+        if (this.commandSuggestor6.mouseScrolled(horizontalAmount)) {
             return true;
         }
-        return super.mouseScrolled(mouseX, mouseY, amount);
+        return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
     }
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (this.commandSuggestor1.mouseClicked(mouseX, mouseY, button)) {
@@ -195,7 +195,7 @@ public class PowerfulStaffScreen extends Screen {
     }
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackground(context);
+        this.renderBackground(context, mouseX, mouseY, delta);
         context.drawCenteredTextWithShadow(this.textRenderer, SET_COMMAND_TEXT, this.width / 2, 20, 0xFFFFFF);
         context.drawTextWithShadow(this.textRenderer, COMMAND_TEXT, this.width / 2 - 150, 40, 0xA0A0A0);
         this.consoleCommandTextField1.render(context, mouseX, mouseY, delta);

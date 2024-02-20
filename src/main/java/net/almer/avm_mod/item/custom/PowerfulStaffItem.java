@@ -13,7 +13,7 @@ import net.almer.avm_mod.entity.ModEntities;
 import net.almer.avm_mod.entity.custom.dark.*;
 import net.almer.avm_mod.item.ModItem;
 import net.almer.avm_mod.network.packet.AddCommandsC2SPacket;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -24,15 +24,17 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.BufferBuilderStorage;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.command.CommandSource;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.AbstractFireballEntity;
+import net.minecraft.entity.projectile.FireballEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.entity.projectile.ProjectileUtil;
+import net.minecraft.entity.projectile.thrown.PotionEntity;
 import net.minecraft.inventory.StackReference;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
@@ -40,6 +42,13 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionUtil;
+import net.minecraft.potion.Potions;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.BiomeTags;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.MinecraftServer;
@@ -47,6 +56,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.IntProperty;
@@ -56,8 +66,12 @@ import net.minecraft.util.ClickType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.Box;
+import net.minecraft.util.math.*;
+import net.minecraft.world.EntityList;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldEvents;
+import net.minecraft.world.biome.Biome;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.event.InputEvent;
@@ -79,15 +93,14 @@ public class PowerfulStaffItem extends ToolItem {
     private float attackSpeed;
     private Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers;
     private ItemStack staff;
-    public static String currentCommand = "";
-    public static int currentMode = 1;
-    public static List<String> bufferedCommands;
-    NbtList commandList;
-    NbtList entityList;
-    public static List absorpedEntities;
+    public String currentCommand = "";
+    private static int currentMode = 1;
+    private ArrayList<String> bufferedCommands;
+    private NbtList commandList;
+    private NbtList entityList;
+    private List absorpedEntities;
     private int remains = 10;
     private int index = 0;
-    private static MinecraftServer server;
     public PowerfulStaffItem(ToolMaterial toolMaterial, int attackDamage, float attackSpeed, Settings settings) {
         super(toolMaterial, settings);
         this.attackDamage = attackDamage;
@@ -97,6 +110,9 @@ public class PowerfulStaffItem extends ToolItem {
         builder.put(EntityAttributes.GENERIC_ATTACK_SPEED, new EntityAttributeModifier(ATTACK_SPEED_MODIFIER_ID, "Weapon modifier", (double)this.attackSpeed, EntityAttributeModifier.Operation.ADDITION));
         this.attributeModifiers = builder.build();
         index = 0;
+    }
+    public static int getCurrentMode(){
+        return currentMode;
     }
     public float getAttackDamage() {
         return this.attackDamage;
@@ -121,29 +137,33 @@ public class PowerfulStaffItem extends ToolItem {
         if (itemStack.isEmpty()) {
             this.playRemoveOneSound(player);
             this.removeFirstStack(stack).ifPresent(removedStack -> this.addToBundle(stack, slot.insertStack((ItemStack)removedStack)));
+            return true;
         } else if (itemStack.getItem().canBeNested()) {
             int i = (1 - this.getBundleOccupancy(stack)) / this.getItemOccupancy(itemStack);
-            if(itemStack.isOf(Blocks.GOLD_BLOCK.asItem()) ||
-                    itemStack.isOf(Blocks.DIAMOND_BLOCK.asItem()) ||
-                    itemStack.isOf(Blocks.NETHERITE_BLOCK.asItem()) ||
-                    itemStack.isOf(Blocks.IRON_BLOCK.asItem()) ||
-                    itemStack.isOf(Blocks.COPPER_BLOCK.asItem()) ||
-                    itemStack.isOf(Blocks.EMERALD_BLOCK.asItem()) ||
-                    itemStack.isOf(Blocks.COMMAND_BLOCK.asItem()) || itemStack.isOf(ModItem.GAME_ICON)) {
-                PowerfulStaffItem.setBlocked(stack, true);
-                this.staff = stack;
-                int j = this.addToBundle(stack, slot.takeStackRange(itemStack.getCount(), i, player));
-                if (j > 0) {
-                    this.playInsertSound(player);
+                if (itemStack.getItem() instanceof BlockItem || itemStack.isOf(ModItem.GAME_ICON)){
+                    PowerfulStaffItem.setBlocked(stack, true);
+                    this.staff = stack;
+                    int j = this.addToBundle(stack, slot.takeStackRange(itemStack.getCount(), i, player));
+                    if (j > 0) {
+                        this.playInsertSound(player);
+                    }
+                    return true;
                 }
-            }
+                else{
+                    return false;
+                }
         }
-        return true;
+        else{
+            return false;
+        }
+    }
+    public void setAttackDamage(float attackDamage) {
+        this.attackDamage = attackDamage;
     }
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         this.staff = stack;
-        this.attackDamage = 6 + muliplicate(stack);
+        this.setAttackDamage(6 + muliplicate(stack));
         ImmutableMultimap.Builder<EntityAttribute, EntityAttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(EntityAttributes.GENERIC_ATTACK_DAMAGE, new EntityAttributeModifier(ATTACK_DAMAGE_MODIFIER_ID, "Weapon modifier", (double)this.attackDamage, EntityAttributeModifier.Operation.ADDITION));
         builder.put(EntityAttributes.GENERIC_ATTACK_SPEED, new EntityAttributeModifier(ATTACK_SPEED_MODIFIER_ID, "Weapon modifier", (double)this.attackSpeed, EntityAttributeModifier.Operation.ADDITION));
@@ -180,6 +200,9 @@ public class PowerfulStaffItem extends ToolItem {
             NbtCompound nbtCompound = stack.getOrCreateNbt();
             this.entityList = nbtCompound.getList("Absorbed", NbtElement.COMPOUND_TYPE);
             if(!nbtCompound.contains("Absorbed") || (nbtCompound.contains("Absorbed") && nbtCompound.getList("Absorbed", NbtElement.COMPOUND_TYPE).isEmpty())){
+                if(nbtCompound.contains("Absorbed") && nbtCompound.getList("Absorbed", NbtElement.COMPOUND_TYPE).isEmpty()){
+                    nbtCompound.remove("Absorbed");
+                }
                 nbtCompound.put("Absorbed", new NbtList());
                 this.entityList = new NbtList();
                 index = 0;
@@ -237,7 +260,7 @@ public class PowerfulStaffItem extends ToolItem {
                 }
             }
         }
-        if(hasBlocks(user.getMainHandStack(), ModItem.GAME_ICON)){
+        else if(hasBlocks(user.getMainHandStack(), ModItem.GAME_ICON)){
             if(currentMode == 3){
                 Random rand = new Random();
                 NbtCompound nbtCompound = this.staff.getNbt();
@@ -296,18 +319,269 @@ public class PowerfulStaffItem extends ToolItem {
                 }
             }
         }
+        else if(hasBlocks(user.getMainHandStack(), Items.FURNACE)){
+            int count = user.getOffHandStack().getCount();
+            if(user.getOffHandStack().isOf(Items.RABBIT)){
+                user.setStackInHand(Hand.OFF_HAND, Items.COOKED_RABBIT.getDefaultStack());
+            }
+            else if(user.getOffHandStack().isOf(Items.MUTTON)){
+                user.setStackInHand(Hand.OFF_HAND, Items.COOKED_MUTTON.getDefaultStack());
+            }
+            else if(user.getOffHandStack().isOf(Items.SALMON)){
+                user.setStackInHand(Hand.OFF_HAND, Items.COOKED_SALMON.getDefaultStack());
+            }
+            else if(user.getOffHandStack().isOf(Items.COD)){
+                user.setStackInHand(Hand.OFF_HAND, Items.COOKED_COD.getDefaultStack());
+            }
+            else if(user.getOffHandStack().isOf(Items.CHICKEN)){
+                user.setStackInHand(Hand.OFF_HAND, Items.COOKED_CHICKEN.getDefaultStack());
+            }
+            else if(user.getOffHandStack().isOf(Items.PORKCHOP)){
+                user.setStackInHand(Hand.OFF_HAND, Items.COOKED_PORKCHOP.getDefaultStack());
+            }
+            else if(user.getOffHandStack().isOf(Items.BEEF)){
+                user.setStackInHand(Hand.OFF_HAND, Items.COOKED_BEEF.getDefaultStack());
+            }
+            else if(user.getOffHandStack().isOf(Items.COAL_ORE)){
+                user.setStackInHand(Hand.OFF_HAND, Items.COAL.getDefaultStack());
+            }
+            else if(user.getOffHandStack().isOf(Items.COPPER_ORE)){
+                user.setStackInHand(Hand.OFF_HAND, Items.COPPER_INGOT.getDefaultStack());
+            }
+            else if(user.getOffHandStack().isOf(Items.IRON_ORE)){
+                user.setStackInHand(Hand.OFF_HAND, Items.IRON_INGOT.getDefaultStack());
+            }
+            else if(user.getOffHandStack().isOf(Items.GOLD_ORE)){
+                user.setStackInHand(Hand.OFF_HAND, Items.GOLD_INGOT.getDefaultStack());
+            }
+            else if(user.getOffHandStack().isOf(Items.DIAMOND_ORE)){
+                user.setStackInHand(Hand.OFF_HAND, Items.DIAMOND.getDefaultStack());
+            }
+            else if(user.getOffHandStack().isOf(Items.EMERALD_ORE)){
+                user.setStackInHand(Hand.OFF_HAND, Items.EMERALD.getDefaultStack());
+            }
+            else if(user.getOffHandStack().isOf(Items.LAPIS_ORE)){
+                user.setStackInHand(Hand.OFF_HAND, Items.LAPIS_LAZULI.getDefaultStack());
+            }
+            user.getOffHandStack().setCount(count);
+        }
+        else if(hasBlocks(user.getMainHandStack(), Items.BREWING_STAND)){
+            Random rand = new Random();
+            int p = rand.nextInt(16);
+            Potion potion = potionChoose(p);
+            PotionEntity potionEntity = new PotionEntity(world, user);
+            potionEntity.setItem(PotionUtil.setPotion(new ItemStack(Items.SPLASH_POTION), potion));
+            potionEntity.setVelocity(user, user.getPitch(), user.getYaw(), -20.0f, 0.5f, 1.0f);
+            world.spawnEntity(potionEntity);
+        }
+        else if(hasBlocks(user.getMainHandStack(), Items.MAGMA_BLOCK)){
+            FireballEntity fireball = new FireballEntity(world, user, 0, 0, 0, 1);
+            fireball.setVelocity(user, user.getPitch(), user.getYaw(), -20.0f, 2.5f, 0.0f);
+            world.spawnEntity(fireball);
+        }
+        else if(hasBlocks(user.getMainHandStack(), Items.TNT)){
+            TntEntity tnt = new TntEntity(EntityType.TNT, world);
+            float f = -MathHelper.sin(user.getYaw() * 0.017453292F) * MathHelper.cos(user.getPitch() * 0.017453292F);
+            float g = -MathHelper.sin((user.getPitch() + -20.0f) * 0.017453292F);
+            float h = MathHelper.cos(user.getYaw() * 0.017453292F) * MathHelper.cos(user.getPitch() * 0.017453292F);
+            Vec3d vec3d = (new Vec3d(f, g, h)).normalize().add(user.getRandom().nextTriangular(0.0, 0.0172275 * 1.0), user.getRandom().nextTriangular(0.0, 0.0172275 * 1.0), user.getRandom().nextTriangular(0.0, 0.0172275 * 1.0)).multiply(0.5);
+            tnt.setVelocity(vec3d);
+            double d = vec3d.horizontalLength();
+            tnt.setYaw((float)(MathHelper.atan2(vec3d.x, vec3d.z) * 57.2957763671875));
+            tnt.setPitch((float)(MathHelper.atan2(vec3d.y, d) * 57.2957763671875));
+            tnt.prevYaw = tnt.getYaw();
+            tnt.prevPitch = tnt.getPitch();
+            Vec3d vec3d1 = user.getVelocity();
+            tnt.setVelocity(tnt.getVelocity().add(vec3d1.x, user.isOnGround() ? 0.0 : vec3d1.y, vec3d1.z));
+            tnt.setPos(user.getX(), user.getY() + 1, user.getZ());
+            world.spawnEntity(tnt);
+        }
+        else if(hasBlocks(user.getMainHandStack(), Items.PISTON)){
+            Vec3d vec3d = user.getVelocity();
+            user.setVelocity(vec3d.x, 1.5f, vec3d.z);
+        }
+        else if(hasBlocks(user.getMainHandStack(), Items.SPAWNER)){
+            Random rand = new Random();
+            int i = rand.nextInt(125);
+            Entity mob = Registries.ENTITY_TYPE.get(i).create(world);
+            if(i >= 121){
+                mob = ModEntities.CREEPER_BEE.create(world);
+            }
+            while(!(mob instanceof LivingEntity)){
+                mob = Registries.ENTITY_TYPE.get(rand.nextInt(120)).create(world);
+            }
+            mob.setPos(user.getX() + rand.nextFloat(-1, 1), user.getY() + 1, user.getZ() + rand.nextFloat(-1, 1));
+            world.spawnEntity(mob);
+        }
+        else{
+            if(!getBlocks(user.getMainHandStack()).stream().allMatch(s->s.isOf(Blocks.AIR.asItem()))) {
+                if (getBlocks(user.getMainHandStack()).get(0).getItem() instanceof BlockItem) {
+                    BlockItem item = (BlockItem) getBlocks(user.getMainHandStack()).get(0).getItem();
+                    Block block = item.getBlock();
+                    for (int x = -3; x < 3; x++) {
+                        for (int y = -3; y < 3; y++) {
+                            for (int z = -3; z < 3; z++) {
+                                if (!world.getBlockState(BlockPos.ofFloored(user.getX() + x, user.getY() + y, user.getZ() + z)).isOf(Blocks.AIR)) {
+                                    world.setBlockState(BlockPos.ofFloored(user.getX() + x, user.getY() + y, user.getZ() + z), block.getDefaultState());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         user.getItemCooldownManager().set(this, getUseDuration(user.getStackInHand(hand)));
         return TypedActionResult.fail(user.getMainHandStack());
+    }
+
+    @Override
+    public ActionResult useOnBlock(ItemUsageContext context) {
+        World world = context.getWorld();
+        BlockPos blockPos = context.getBlockPos();
+        BlockPos blockPos2 = blockPos.offset(context.getSide());
+        if(hasBlocks(context.getStack(), Items.BONE_BLOCK)){
+            if (useOnFertilizable(context.getStack(), world, blockPos)) {
+                if (!world.isClient) {
+                    world.syncWorldEvent(WorldEvents.BONE_MEAL_USED, blockPos, 0);
+                }
+                return ActionResult.success(world.isClient);
+            }
+            BlockState blockState = world.getBlockState(blockPos);
+            boolean bl = blockState.isSideSolidFullSquare(world, blockPos, context.getSide());
+            if (bl && useOnGround(context.getStack(), world, blockPos2, context.getSide())) {
+                if (!world.isClient) {
+                    world.syncWorldEvent(WorldEvents.BONE_MEAL_USED, blockPos2, 0);
+                }
+                return ActionResult.success(world.isClient);
+            }
+        }
+        context.getPlayer().getItemCooldownManager().set(this, getUseDuration(context.getStack()));
+        return ActionResult.PASS;
+    }
+    public static boolean useOnFertilizable(ItemStack stack, World world, BlockPos pos) {
+        BlockState blockState = world.getBlockState(pos);
+        Block var5 = blockState.getBlock();
+        if (var5 instanceof Fertilizable fertilizable) {
+            if (fertilizable.isFertilizable(world, pos, blockState)) {
+                if (world instanceof ServerWorld) {
+                    if (fertilizable.canGrow(world, world.random, pos, blockState)) {
+                        fertilizable.grow((ServerWorld)world, world.random, pos, blockState);
+                    }
+
+                    stack.decrement(1);
+                }
+
+                return true;
+            }
+        }
+        return false;
+    }
+    public static boolean useOnGround(ItemStack stack, World world, BlockPos blockPos, @Nullable Direction facing) {
+        if (!world.getBlockState(blockPos).isOf(Blocks.WATER) || world.getFluidState(blockPos).getLevel() != 8) {
+            return false;
+        }
+        if (!(world instanceof ServerWorld)) {
+            return true;
+        }
+        net.minecraft.util.math.random.Random random = world.getRandom();
+        block0: for (int i = 0; i < 128; ++i) {
+            BlockPos blockPos2 = blockPos;
+            BlockState blockState = Blocks.SEAGRASS.getDefaultState();
+            for (int j = 0; j < i / 16; ++j) {
+                if (world.getBlockState(blockPos2 = blockPos2.add(random.nextInt(3) - 1, (random.nextInt(3) - 1) * random.nextInt(3) / 2, random.nextInt(3) - 1)).isFullCube(world, blockPos2)) continue block0;
+            }
+            RegistryEntry<Biome> registryEntry = world.getBiome(blockPos2);
+            if (registryEntry.isIn(BiomeTags.PRODUCES_CORALS_FROM_BONEMEAL)) {
+                if (i == 0 && facing != null && facing.getAxis().isHorizontal()) {
+                    blockState = Registries.BLOCK.getEntryList(BlockTags.WALL_CORALS).flatMap(blocks -> blocks.getRandom(world.random)).map(blockEntry -> ((Block)blockEntry.value()).getDefaultState()).orElse(blockState);
+                    if (blockState.contains(DeadCoralWallFanBlock.FACING)) {
+                        blockState = (BlockState)blockState.with(DeadCoralWallFanBlock.FACING, facing);
+                    }
+                } else if (random.nextInt(4) == 0) {
+                    blockState = Registries.BLOCK.getEntryList(BlockTags.UNDERWATER_BONEMEALS).flatMap(blocks -> blocks.getRandom(world.random)).map(blockEntry -> ((Block)blockEntry.value()).getDefaultState()).orElse(blockState);
+                }
+            }
+            if (blockState.isIn(BlockTags.WALL_CORALS, state -> state.contains(DeadCoralWallFanBlock.FACING))) {
+                for (int k = 0; !blockState.canPlaceAt(world, blockPos2) && k < 4; ++k) {
+                    blockState = (BlockState)blockState.with(DeadCoralWallFanBlock.FACING, Direction.Type.HORIZONTAL.random(random));
+                }
+            }
+            if (!blockState.canPlaceAt(world, blockPos2)) continue;
+            BlockState blockState2 = world.getBlockState(blockPos2);
+            if (blockState2.isOf(Blocks.WATER) && world.getFluidState(blockPos2).getLevel() == 8) {
+                world.setBlockState(blockPos2, blockState, Block.NOTIFY_ALL);
+                continue;
+            }
+            if (!blockState2.isOf(Blocks.SEAGRASS) || random.nextInt(10) != 0) continue;
+            ((Fertilizable)((Object)Blocks.SEAGRASS)).grow((ServerWorld)world, random, blockPos2, blockState2);
+        }
+        return true;
+    }
+    public Potion potionChoose(int p){
+        if(p == 0){
+            return Potions.FIRE_RESISTANCE;
+        }
+        else if(p == 1){
+            return Potions.INVISIBILITY;
+        }
+        else if(p == 2){
+            return Potions.LEAPING;
+        }
+        else if(p == 3){
+            return Potions.HARMING;
+        }
+        else if(p == 4){
+            return Potions.LUCK;
+        }
+        else if(p == 5){
+            return Potions.MUNDANE;
+        }
+        else if(p == 6){
+            return Potions.NIGHT_VISION;
+        }
+        else if(p == 7){
+            return Potions.POISON;
+        }
+        else if(p == 8){
+            return Potions.REGENERATION;
+        }
+        else if(p == 9){
+            return Potions.SLOW_FALLING;
+        }
+        else if(p == 10){
+            return Potions.SLOWNESS;
+        }
+        else if(p == 11){
+            return Potions.STRENGTH;
+        }
+        else if(p == 12){
+            return Potions.SWIFTNESS;
+        }
+        else if(p == 13){
+            return Potions.THICK;
+        }
+        else if(p == 14){
+            return Potions.TURTLE_MASTER;
+        }
+        else if(p == 15){
+            return Potions.WATER_BREATHING;
+        }
+        else if(p == 16){
+            return Potions.WEAKNESS;
+        }
+        else{
+            return null;
+        }
     }
     public int getUseDuration(ItemStack itemStack){
         return 30;
     }
     @Override
     public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
-        if(hasBlocks(stack, ModItem.GAME_ICON) && currentMode == 2){
+        if(hasBlocks(stack, ModItem.GAME_ICON) && currentMode == 2) {
             NbtCompound nbtCompound = this.staff.getOrCreateNbt();
             this.entityList = nbtCompound.getList("Absorbed", NbtElement.COMPOUND_TYPE);
-            if(remains > 0) {
+            if (remains > 0) {
                 remains--;
                 NbtList list = nbtCompound.getList("Absorbed", NbtElement.COMPOUND_TYPE);
                 absorpedEntities = new ArrayList();
@@ -537,7 +811,7 @@ public class PowerfulStaffItem extends ToolItem {
     private void playInsertSound(Entity entity) {
         entity.playSound(SoundEvents.ITEM_BUNDLE_INSERT, 0.8f, 0.8f + entity.getWorld().getRandom().nextFloat() * 0.4f);
     }
-    private static List<ItemStack> getBlocks(ItemStack staff) {
+    private List<ItemStack> getBlocks(ItemStack staff) {
         NbtList nbtList;
         ArrayList<ItemStack> list = Lists.newArrayList();
         NbtCompound nbtCompound = staff.getNbt();
@@ -549,8 +823,20 @@ public class PowerfulStaffItem extends ToolItem {
         }
         return list;
     }
-    public static boolean hasBlocks(ItemStack staff, Item block) {
-        return PowerfulStaffItem.getBlocks(staff).stream().anyMatch(s -> s.isOf(block));
+    private boolean hasBlocks(ItemStack staff, Item block) {
+        return getBlocks(staff).stream().anyMatch(s -> s.isOf(block));
+    }
+    public static boolean hasAnotherBlocks(ItemStack staff, Item block){
+        NbtList nbtList;
+        ArrayList<ItemStack> list = Lists.newArrayList();
+        NbtCompound nbtCompound = staff.getNbt();
+        if (nbtCompound != null && nbtCompound.contains(ITEMS_KEY, NbtElement.LIST_TYPE) && (nbtList = nbtCompound.getList(ITEMS_KEY, NbtElement.COMPOUND_TYPE)) != null) {
+            for (int i = 0; i < nbtList.size(); ++i) {
+                NbtCompound nbtCompound2 = nbtList.getCompound(i);
+                list.add(ItemStack.fromNbt(nbtCompound2));
+            }
+        }
+        return list.stream().anyMatch(s -> s.isOf(block));
     }
     public static boolean isBlocked(ItemStack stack) {
         NbtCompound nbtCompound = stack.getNbt();
@@ -563,29 +849,29 @@ public class PowerfulStaffItem extends ToolItem {
             nbtCompound.remove(BLOCKED_KEY);
         }
     }
-    public static int muliplicate(ItemStack stack){
-        if(PowerfulStaffItem.hasBlocks(stack, Items.COPPER_BLOCK)){
+    private int muliplicate(ItemStack stack){
+        if(hasBlocks(stack, Items.COPPER_BLOCK)){
             return 1;
         }
-        if(PowerfulStaffItem.hasBlocks(stack, Items.IRON_BLOCK)){
+        if(hasBlocks(stack, Items.IRON_BLOCK)){
             return 2;
         }
-        if(PowerfulStaffItem.hasBlocks(stack, Items.GOLD_BLOCK)){
+        if(hasBlocks(stack, Items.GOLD_BLOCK)){
             return 3;
         }
-        if(PowerfulStaffItem.hasBlocks(stack, Items.EMERALD_BLOCK)){
+        if(hasBlocks(stack, Items.EMERALD_BLOCK)){
             return 4;
         }
-        if(PowerfulStaffItem.hasBlocks(stack, Items.DIAMOND_BLOCK)){
+        if(hasBlocks(stack, Items.DIAMOND_BLOCK)){
             return 5;
         }
-        if(PowerfulStaffItem.hasBlocks(stack, Items.NETHERITE_BLOCK)){
+        if(hasBlocks(stack, Items.NETHERITE_BLOCK)){
             return 7;
         }
-        if(PowerfulStaffItem.hasBlocks(stack, Items.COMMAND_BLOCK)){
+        if(hasBlocks(stack, Items.COMMAND_BLOCK)){
             return 11;
         }
-        if(PowerfulStaffItem.hasBlocks(stack, ModItem.GAME_ICON)){
+        if(hasBlocks(stack, ModItem.GAME_ICON)){
             return 13;
         }
         else{
