@@ -1,5 +1,6 @@
 package net.almer.avm_mod.mixin;
 import net.almer.avm_mod.AvMMod;
+import net.almer.avm_mod.AvMModClient;
 import net.almer.avm_mod.item.ModItem;
 import net.almer.avm_mod.item.custom.PowerfulStaffItem;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -25,98 +26,98 @@ public abstract class ItemRendererMixin {
     }
     @ModifyVariable(method = "renderItem", at = @At(value = "HEAD"), argsOnly = true)
     public BakedModel useCopperStaffModel(BakedModel value, ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && PowerfulStaffItem.hasAnotherBlocks(stack, Items.COPPER_BLOCK)) {
+        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && AvMModClient.hasAnotherBlocks(stack, Items.COPPER_BLOCK)) {
             return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(AvMMod.MOD_ID, "staff_states/copper_staff_3d", "inventory"));
         }
         return value;
     }
     @ModifyVariable(method = "renderItem", at = @At(value = "HEAD"), argsOnly = true)
     public BakedModel useIronStaffModel(BakedModel value, ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && PowerfulStaffItem.hasAnotherBlocks(stack, Items.IRON_BLOCK)) {
+        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && AvMModClient.hasAnotherBlocks(stack, Items.IRON_BLOCK)) {
             return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(AvMMod.MOD_ID, "staff_states/iron_staff_3d", "inventory"));
         }
         return value;
     }
     @ModifyVariable(method = "renderItem", at = @At(value = "HEAD"), argsOnly = true)
     public BakedModel useGoldStaffModel(BakedModel value, ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && PowerfulStaffItem.hasAnotherBlocks(stack, Items.GOLD_BLOCK)) {
+        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && AvMModClient.hasAnotherBlocks(stack, Items.GOLD_BLOCK)) {
             return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(AvMMod.MOD_ID, "staff_states/gold_staff_3d", "inventory"));
         }
         return value;
     }
     @ModifyVariable(method = "renderItem", at = @At(value = "HEAD"), argsOnly = true)
     public BakedModel useEmeraldStaffModel(BakedModel value, ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && PowerfulStaffItem.hasAnotherBlocks(stack, Items.EMERALD_BLOCK)) {
+        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && AvMModClient.hasAnotherBlocks(stack, Items.EMERALD_BLOCK)) {
             return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(AvMMod.MOD_ID, "staff_states/emerald_staff_3d", "inventory"));
         }
         return value;
     }
     @ModifyVariable(method = "renderItem", at = @At(value = "HEAD"), argsOnly = true)
     public BakedModel useDiamondStaffModel(BakedModel value, ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI&& PowerfulStaffItem.hasAnotherBlocks(stack, Items.DIAMOND_BLOCK)) {
+        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI&& AvMModClient.hasAnotherBlocks(stack, Items.DIAMOND_BLOCK)) {
             return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(AvMMod.MOD_ID, "staff_states/diamond_staff_3d", "inventory"));
         }
         return value;
     }
     @ModifyVariable(method = "renderItem", at = @At(value = "HEAD"), argsOnly = true)
     public BakedModel useNetheriteStaffModel(BakedModel value, ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI&& PowerfulStaffItem.hasAnotherBlocks(stack, Items.NETHERITE_BLOCK)) {
+        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI&& AvMModClient.hasAnotherBlocks(stack, Items.NETHERITE_BLOCK)) {
             return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(AvMMod.MOD_ID, "staff_states/netherite_staff_3d", "inventory"));
         }
         return value;
     }
     @ModifyVariable(method = "renderItem", at = @At(value = "HEAD"), argsOnly = true)
     public BakedModel useCommandStaffModel(BakedModel value, ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && PowerfulStaffItem.hasAnotherBlocks(stack, Items.COMMAND_BLOCK)) {
+        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && AvMModClient.hasAnotherBlocks(stack, Items.COMMAND_BLOCK)) {
             return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(AvMMod.MOD_ID, "staff_states/command_staff_3d", "inventory"));
         }
         return value;
     }
     @ModifyVariable(method = "renderItem", at = @At(value = "HEAD"), argsOnly = true)
     public BakedModel useIconStaffModel(BakedModel value, ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && PowerfulStaffItem.hasAnotherBlocks(stack, ModItem.GAME_ICON)) {
+        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && AvMModClient.hasAnotherBlocks(stack, ModItem.GAME_ICON)) {
             return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(AvMMod.MOD_ID, "staff_states/icon_staff_3d", "inventory"));
         }
         return value;
     }
     @ModifyVariable(method = "renderItem", at = @At(value = "HEAD"), argsOnly = true)
     public BakedModel useFurnaceStaffModel(BakedModel value, ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && PowerfulStaffItem.hasAnotherBlocks(stack, Items.FURNACE)) {
+        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && AvMModClient.hasAnotherBlocks(stack, Items.FURNACE)) {
             return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(AvMMod.MOD_ID, "staff_states/furnace_staff_3d", "inventory"));
         }
         return value;
     }
     @ModifyVariable(method = "renderItem", at = @At(value = "HEAD"), argsOnly = true)
     public BakedModel useTntStaffModel(BakedModel value, ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && PowerfulStaffItem.hasAnotherBlocks(stack, Items.TNT)) {
+        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && AvMModClient.hasAnotherBlocks(stack, Items.TNT)) {
             return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(AvMMod.MOD_ID, "staff_states/tnt_staff_3d", "inventory"));
         }
         return value;
     }
     @ModifyVariable(method = "renderItem", at = @At(value = "HEAD"), argsOnly = true)
     public BakedModel useMagmaStaffModel(BakedModel value, ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && PowerfulStaffItem.hasAnotherBlocks(stack, Items.MAGMA_BLOCK)) {
+        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && AvMModClient.hasAnotherBlocks(stack, Items.MAGMA_BLOCK)) {
             return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(AvMMod.MOD_ID, "staff_states/magma_staff_3d", "inventory"));
         }
         return value;
     }
     @ModifyVariable(method = "renderItem", at = @At(value = "HEAD"), argsOnly = true)
     public BakedModel useBoneStaffModel(BakedModel value, ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && PowerfulStaffItem.hasAnotherBlocks(stack, Items.BONE_BLOCK)) {
+        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && AvMModClient.hasAnotherBlocks(stack, Items.BONE_BLOCK)) {
             return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(AvMMod.MOD_ID, "staff_states/bone_staff_3d", "inventory"));
         }
         return value;
     }
     @ModifyVariable(method = "renderItem", at = @At(value = "HEAD"), argsOnly = true)
     public BakedModel useSpawnerStaffModel(BakedModel value, ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && PowerfulStaffItem.hasAnotherBlocks(stack, Items.SPAWNER)) {
+        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && AvMModClient.hasAnotherBlocks(stack, Items.SPAWNER)) {
             return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(AvMMod.MOD_ID, "staff_states/spawner_staff_3d", "inventory"));
         }
         return value;
     }
     @ModifyVariable(method = "renderItem", at = @At(value = "HEAD"), argsOnly = true)
     public BakedModel usePistonStaffModel(BakedModel value, ItemStack stack, ModelTransformationMode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && PowerfulStaffItem.hasAnotherBlocks(stack, Items.PISTON)) {
+        if (stack.isOf(ModItem.POWERFUL_STAFF) && renderMode != ModelTransformationMode.GUI && AvMModClient.hasAnotherBlocks(stack, Items.PISTON)) {
             return ((ItemRendererAccessor) this).mccourse$getModels().getModelManager().getModel(new ModelIdentifier(AvMMod.MOD_ID, "staff_states/piston_staff_3d", "inventory"));
         }
         return value;

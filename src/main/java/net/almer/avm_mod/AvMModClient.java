@@ -1,5 +1,6 @@
 package net.almer.avm_mod;
 
+import com.google.common.collect.Lists;
 import net.almer.avm_mod.block.ModBlock;
 import net.almer.avm_mod.entity.ModEntities;
 import net.almer.avm_mod.entity.client.*;
@@ -34,6 +35,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.CrossbowItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -41,6 +43,8 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.ArrayList;
 
 @Environment(EnvType.CLIENT)
 public class AvMModClient implements ClientModInitializer {
@@ -119,33 +123,32 @@ public class AvMModClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlock.DEACTIVATED_STAFF, RenderLayer.getCutout());
 
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "blocked"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.isBlocked(stack) ? 1.0f : 0.0f);
+                stack.getNbt() != null && stack.getNbt().getBoolean(PowerfulStaffItem.BLOCKED_KEY) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "copper"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasAnotherBlocks(stack, Items.COPPER_BLOCK) ? 1.0f : 0.0f);
+                hasAnotherBlocks(stack, Items.COPPER_BLOCK) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "iron"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasAnotherBlocks(stack, Items.IRON_BLOCK) ? 1.0f : 0.0f);
+                hasAnotherBlocks(stack, Items.IRON_BLOCK) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "gold"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasAnotherBlocks(stack, Items.GOLD_BLOCK) ? 1.0f : 0.0f);
+                hasAnotherBlocks(stack, Items.GOLD_BLOCK) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "emerald"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasAnotherBlocks(stack, Items.EMERALD_BLOCK) ? 1.0f : 0.0f);
+                hasAnotherBlocks(stack, Items.EMERALD_BLOCK) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "diamond"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasAnotherBlocks(stack, Items.DIAMOND_BLOCK) ? 1.0f : 0.0f);
+                hasAnotherBlocks(stack, Items.DIAMOND_BLOCK) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "netherite"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasAnotherBlocks(stack, Items.NETHERITE_BLOCK) ? 1.0f : 0.0f);
+                hasAnotherBlocks(stack, Items.NETHERITE_BLOCK) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "command"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasAnotherBlocks(stack, Items.COMMAND_BLOCK) ? 1.0f : 0.0f);
+                hasAnotherBlocks(stack, Items.COMMAND_BLOCK) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "furnace"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasAnotherBlocks(stack, Items.FURNACE) ? 1.0f : 0.0f);
+                hasAnotherBlocks(stack, Items.FURNACE) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "bone"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasAnotherBlocks(stack, Items.BONE_BLOCK) ? 1.0f : 0.0f);
+                hasAnotherBlocks(stack, Items.BONE_BLOCK) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "magma"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasAnotherBlocks(stack, Items.MAGMA_BLOCK) ? 1.0f : 0.0f);
-        ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "tnt"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasAnotherBlocks(stack, Items.TNT) ? 1.0f : 0.0f);
+                hasAnotherBlocks(stack, Items.MAGMA_BLOCK) ? 1.0f : 0.0f);
+        ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "tnt"), (stack, world, entity, seed) -> hasAnotherBlocks(stack, Items.TNT) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "piston"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasAnotherBlocks(stack, Items.PISTON) ? 1.0f : 0.0f);
+                hasAnotherBlocks(stack, Items.PISTON) ? 1.0f : 0.0f);
         ModelPredicateProviderRegistry.register(ModItem.POWERFUL_STAFF, new Identifier(AvMMod.MOD_ID, "spawner"), (stack, world, entity, seed) ->
-                PowerfulStaffItem.hasAnotherBlocks(stack, Items.SPAWNER) ? 1.0f : 0.0f);
+                hasAnotherBlocks(stack, Items.SPAWNER) ? 1.0f : 0.0f);
 
         POWERFUL_STAFF_USE = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.avm_mod.staff_use", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, "category.avm_mod.keybinds"));
         POWERFUL_STAFF_USE_1 = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.avm_mod.staff_use_1", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V, "category.avm_mod.keybinds"));
@@ -154,5 +157,17 @@ public class AvMModClient implements ClientModInitializer {
         POWERFUL_STAFF_USE_4 = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.avm_mod.staff_use_4", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_M, "category.avm_mod.keybinds"));
         POWERFUL_STAFF_USE_5 = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.avm_mod.staff_use_5", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_COMMA, "category.avm_mod.keybinds"));
         POWERFUL_STAFF_USE_6 = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.avm_mod.staff_use_6", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_PERIOD, "category.avm_mod.keybinds"));
+    }
+    public static boolean hasAnotherBlocks(ItemStack staff, Item block){
+        NbtList nbtList;
+        ArrayList<ItemStack> list = Lists.newArrayList();
+        NbtCompound nbtCompound = staff.getNbt();
+        if (nbtCompound != null && nbtCompound.contains(PowerfulStaffItem.ITEMS_KEY, NbtElement.LIST_TYPE) && (nbtList = nbtCompound.getList(PowerfulStaffItem.ITEMS_KEY, NbtElement.COMPOUND_TYPE)) != null) {
+            for (int i = 0; i < nbtList.size(); ++i) {
+                NbtCompound nbtCompound2 = nbtList.getCompound(i);
+                list.add(ItemStack.fromNbt(nbtCompound2));
+            }
+        }
+        return list.stream().anyMatch(s -> s.isOf(block));
     }
 }

@@ -80,8 +80,8 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class PowerfulStaffItem extends ToolItem {
-    private static final String ITEMS_KEY = "Block";
-    private static final String BLOCKED_KEY = "Blocked";
+    public static final String ITEMS_KEY = "Block";
+    public static final String BLOCKED_KEY = "Blocked";
     private static final String currentCommandKey = "gui.avm_mod.current_text";
     private static final int zombieIndex = 1;
     private static final int skeletonIndex = 2;
@@ -141,7 +141,7 @@ public class PowerfulStaffItem extends ToolItem {
         } else if (itemStack.getItem().canBeNested()) {
             int i = (1 - this.getBundleOccupancy(stack)) / this.getItemOccupancy(itemStack);
                 if (itemStack.getItem() instanceof BlockItem || itemStack.isOf(ModItem.GAME_ICON)){
-                    PowerfulStaffItem.setBlocked(stack, true);
+                    setBlocked(stack, true);
                     this.staff = stack;
                     int j = this.addToBundle(stack, slot.takeStackRange(itemStack.getCount(), i, player));
                     if (j > 0) {
@@ -163,7 +163,7 @@ public class PowerfulStaffItem extends ToolItem {
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         this.staff = stack;
-        this.setAttackDamage(6 + muliplicate(stack));
+        setAttackDamage(6 + muliplicate(stack));
         ImmutableMultimap.Builder<EntityAttribute, EntityAttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(EntityAttributes.GENERIC_ATTACK_DAMAGE, new EntityAttributeModifier(ATTACK_DAMAGE_MODIFIER_ID, "Weapon modifier", (double)this.attackDamage, EntityAttributeModifier.Operation.ADDITION));
         builder.put(EntityAttributes.GENERIC_ATTACK_SPEED, new EntityAttributeModifier(ATTACK_SPEED_MODIFIER_ID, "Weapon modifier", (double)this.attackSpeed, EntityAttributeModifier.Operation.ADDITION));
@@ -237,33 +237,33 @@ public class PowerfulStaffItem extends ToolItem {
     }
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        if (hasBlocks(user.getMainHandStack(), Items.COMMAND_BLOCK) && user.isCreativeLevelTwoOp()) {
-            if (AvMModClient.POWERFUL_STAFF_USE.isPressed()) {
-                PowerfulStaffScreen screen = new PowerfulStaffScreen(this.staff);
-                MinecraftClient.getInstance().setScreenAndRender(screen);
-                screen.addPlayer(user);
-                screen.addCommands(bufferedCommands);
-                NbtCompound nbtCompound = this.staff.getOrCreateNbt();
-                if (!nbtCompound.contains("Commands")) {
-                    nbtCompound.put("Commands", new NbtList());
-                }
-                this.commandList = nbtCompound.getList("Commands", NbtElement.COMPOUND_TYPE);
-                TypedActionResult.success(user.getMainHandStack());
-            } else {
-                if (currentCommand != "" && !AvMModClient.POWERFUL_STAFF_USE.isPressed()) {
-                    if (currentCommand.startsWith("/")) {
-                        String readyCommand = currentCommand.substring(1);
-                        MinecraftClient.getInstance().player.networkHandler.sendChatCommand(readyCommand);
-                    } else {
-                        MinecraftClient.getInstance().player.networkHandler.sendChatCommand(currentCommand);
+        if(!user.getOffHandStack().isOf(ModItem.POWERFUL_STAFF)) {
+            if (hasBlocks(user.getMainHandStack(), Items.COMMAND_BLOCK) && user.isCreativeLevelTwoOp()) {
+                if (AvMModClient.POWERFUL_STAFF_USE.isPressed()) {
+                    PowerfulStaffScreen screen = new PowerfulStaffScreen(this.staff);
+                    MinecraftClient.getInstance().setScreenAndRender(screen);
+                    screen.addPlayer(user);
+                    screen.addCommands(bufferedCommands);
+                    NbtCompound nbtCompound = this.staff.getOrCreateNbt();
+                    if (!nbtCompound.contains("Commands")) {
+                        nbtCompound.put("Commands", new NbtList());
+                    }
+                    this.commandList = nbtCompound.getList("Commands", NbtElement.COMPOUND_TYPE);
+                    TypedActionResult.success(user.getMainHandStack());
+                } else {
+                    if (currentCommand != "" && !AvMModClient.POWERFUL_STAFF_USE.isPressed()) {
+                        if (currentCommand.startsWith("/")) {
+                            String readyCommand = currentCommand.substring(1);
+                            MinecraftClient.getInstance().player.networkHandler.sendChatCommand(readyCommand);
+                        } else {
+                            MinecraftClient.getInstance().player.networkHandler.sendChatCommand(currentCommand);
+                        }
                     }
                 }
-            }
-        }
-        else if(hasBlocks(user.getMainHandStack(), ModItem.GAME_ICON)){
-            if(currentMode == 3){
-                Random rand = new Random();
-                NbtCompound nbtCompound = this.staff.getNbt();
+            } else if (hasBlocks(user.getMainHandStack(), ModItem.GAME_ICON)) {
+                if (currentMode == 3) {
+                    Random rand = new Random();
+                    NbtCompound nbtCompound = this.staff.getNbt();
                     if (nbtCompound.getList("Absorbed", NbtElement.COMPOUND_TYPE) != null) {
                         NbtList list = nbtCompound.getList("Absorbed", NbtElement.COMPOUND_TYPE);
                         for (int i = 0; i < 10; i++) {
@@ -311,127 +311,107 @@ public class PowerfulStaffItem extends ToolItem {
                                 list.set(i, placeholder);
                                 remains = 10;
                                 index = 0;
-                            }
-                            else {
+                            } else {
                                 user.sendMessage(Text.translatable("gui.avm_mod.fail_summon_empty"), true);
                             }
+                        }
                     }
                 }
-            }
-        }
-        else if(hasBlocks(user.getMainHandStack(), Items.FURNACE)){
-            int count = user.getOffHandStack().getCount();
-            if(user.getOffHandStack().isOf(Items.RABBIT)){
-                user.setStackInHand(Hand.OFF_HAND, Items.COOKED_RABBIT.getDefaultStack());
-            }
-            else if(user.getOffHandStack().isOf(Items.MUTTON)){
-                user.setStackInHand(Hand.OFF_HAND, Items.COOKED_MUTTON.getDefaultStack());
-            }
-            else if(user.getOffHandStack().isOf(Items.SALMON)){
-                user.setStackInHand(Hand.OFF_HAND, Items.COOKED_SALMON.getDefaultStack());
-            }
-            else if(user.getOffHandStack().isOf(Items.COD)){
-                user.setStackInHand(Hand.OFF_HAND, Items.COOKED_COD.getDefaultStack());
-            }
-            else if(user.getOffHandStack().isOf(Items.CHICKEN)){
-                user.setStackInHand(Hand.OFF_HAND, Items.COOKED_CHICKEN.getDefaultStack());
-            }
-            else if(user.getOffHandStack().isOf(Items.PORKCHOP)){
-                user.setStackInHand(Hand.OFF_HAND, Items.COOKED_PORKCHOP.getDefaultStack());
-            }
-            else if(user.getOffHandStack().isOf(Items.BEEF)){
-                user.setStackInHand(Hand.OFF_HAND, Items.COOKED_BEEF.getDefaultStack());
-            }
-            else if(user.getOffHandStack().isOf(Items.COAL_ORE)){
-                user.setStackInHand(Hand.OFF_HAND, Items.COAL.getDefaultStack());
-            }
-            else if(user.getOffHandStack().isOf(Items.COPPER_ORE)){
-                user.setStackInHand(Hand.OFF_HAND, Items.COPPER_INGOT.getDefaultStack());
-            }
-            else if(user.getOffHandStack().isOf(Items.IRON_ORE)){
-                user.setStackInHand(Hand.OFF_HAND, Items.IRON_INGOT.getDefaultStack());
-            }
-            else if(user.getOffHandStack().isOf(Items.GOLD_ORE)){
-                user.setStackInHand(Hand.OFF_HAND, Items.GOLD_INGOT.getDefaultStack());
-            }
-            else if(user.getOffHandStack().isOf(Items.DIAMOND_ORE)){
-                user.setStackInHand(Hand.OFF_HAND, Items.DIAMOND.getDefaultStack());
-            }
-            else if(user.getOffHandStack().isOf(Items.EMERALD_ORE)){
-                user.setStackInHand(Hand.OFF_HAND, Items.EMERALD.getDefaultStack());
-            }
-            else if(user.getOffHandStack().isOf(Items.LAPIS_ORE)){
-                user.setStackInHand(Hand.OFF_HAND, Items.LAPIS_LAZULI.getDefaultStack());
-            }
-            user.getOffHandStack().setCount(count);
-        }
-        else if(hasBlocks(user.getMainHandStack(), Items.BREWING_STAND)){
-            Random rand = new Random();
-            int p = rand.nextInt(16);
-            Potion potion = potionChoose(p);
-            PotionEntity potionEntity = new PotionEntity(world, user);
-            potionEntity.setItem(PotionUtil.setPotion(new ItemStack(Items.SPLASH_POTION), potion));
-            potionEntity.setVelocity(user, user.getPitch(), user.getYaw(), -20.0f, 0.5f, 1.0f);
-            world.spawnEntity(potionEntity);
-        }
-        else if(hasBlocks(user.getMainHandStack(), Items.MAGMA_BLOCK)){
-            FireballEntity fireball = new FireballEntity(world, user, 0, 0, 0, 1);
-            fireball.setVelocity(user, user.getPitch(), user.getYaw(), -20.0f, 2.5f, 0.0f);
-            world.spawnEntity(fireball);
-        }
-        else if(hasBlocks(user.getMainHandStack(), Items.TNT)){
-            TntEntity tnt = new TntEntity(EntityType.TNT, world);
-            float f = -MathHelper.sin(user.getYaw() * 0.017453292F) * MathHelper.cos(user.getPitch() * 0.017453292F);
-            float g = -MathHelper.sin((user.getPitch() + -20.0f) * 0.017453292F);
-            float h = MathHelper.cos(user.getYaw() * 0.017453292F) * MathHelper.cos(user.getPitch() * 0.017453292F);
-            Vec3d vec3d = (new Vec3d(f, g, h)).normalize().add(user.getRandom().nextTriangular(0.0, 0.0172275 * 1.0), user.getRandom().nextTriangular(0.0, 0.0172275 * 1.0), user.getRandom().nextTriangular(0.0, 0.0172275 * 1.0)).multiply(0.5);
-            tnt.setVelocity(vec3d);
-            double d = vec3d.horizontalLength();
-            tnt.setYaw((float)(MathHelper.atan2(vec3d.x, vec3d.z) * 57.2957763671875));
-            tnt.setPitch((float)(MathHelper.atan2(vec3d.y, d) * 57.2957763671875));
-            tnt.prevYaw = tnt.getYaw();
-            tnt.prevPitch = tnt.getPitch();
-            Vec3d vec3d1 = user.getVelocity();
-            tnt.setVelocity(tnt.getVelocity().add(vec3d1.x, user.isOnGround() ? 0.0 : vec3d1.y, vec3d1.z));
-            tnt.setPos(user.getX(), user.getY() + 1, user.getZ());
-            world.spawnEntity(tnt);
-        }
-        else if(hasBlocks(user.getMainHandStack(), Items.PISTON)){
-            Vec3d vec3d = user.getVelocity();
-            user.setVelocity(vec3d.x, 1.5f, vec3d.z);
-        }
-        else if(hasBlocks(user.getMainHandStack(), Items.SPAWNER)){
-            Random rand = new Random();
-            int i = rand.nextInt(125);
-            Entity mob = Registries.ENTITY_TYPE.get(i).create(world);
-            if(i >= 121){
-                mob = ModEntities.CREEPER_BEE.create(world);
-            }
-            while(!(mob instanceof LivingEntity)){
-                mob = Registries.ENTITY_TYPE.get(rand.nextInt(120)).create(world);
-            }
-            mob.setPos(user.getX() + rand.nextFloat(-1, 1), user.getY() + 1, user.getZ() + rand.nextFloat(-1, 1));
-            world.spawnEntity(mob);
-        }
-        else{
-            if(!getBlocks(user.getMainHandStack()).stream().allMatch(s->s.isOf(Blocks.AIR.asItem()))) {
-                if (getBlocks(user.getMainHandStack()).get(0).getItem() instanceof BlockItem) {
-                    BlockItem item = (BlockItem) getBlocks(user.getMainHandStack()).get(0).getItem();
-                    Block block = item.getBlock();
-                    for (int x = -3; x < 3; x++) {
-                        for (int y = -3; y < 3; y++) {
-                            for (int z = -3; z < 3; z++) {
-                                if (!world.getBlockState(BlockPos.ofFloored(user.getX() + x, user.getY() + y, user.getZ() + z)).isOf(Blocks.AIR)) {
-                                    world.setBlockState(BlockPos.ofFloored(user.getX() + x, user.getY() + y, user.getZ() + z), block.getDefaultState());
+            } else if (hasBlocks(user.getMainHandStack(), Items.FURNACE)) {
+                int count = user.getOffHandStack().getCount();
+                if (user.getOffHandStack().isOf(Items.RABBIT)) {
+                    user.setStackInHand(Hand.OFF_HAND, Items.COOKED_RABBIT.getDefaultStack());
+                } else if (user.getOffHandStack().isOf(Items.MUTTON)) {
+                    user.setStackInHand(Hand.OFF_HAND, Items.COOKED_MUTTON.getDefaultStack());
+                } else if (user.getOffHandStack().isOf(Items.SALMON)) {
+                    user.setStackInHand(Hand.OFF_HAND, Items.COOKED_SALMON.getDefaultStack());
+                } else if (user.getOffHandStack().isOf(Items.COD)) {
+                    user.setStackInHand(Hand.OFF_HAND, Items.COOKED_COD.getDefaultStack());
+                } else if (user.getOffHandStack().isOf(Items.CHICKEN)) {
+                    user.setStackInHand(Hand.OFF_HAND, Items.COOKED_CHICKEN.getDefaultStack());
+                } else if (user.getOffHandStack().isOf(Items.PORKCHOP)) {
+                    user.setStackInHand(Hand.OFF_HAND, Items.COOKED_PORKCHOP.getDefaultStack());
+                } else if (user.getOffHandStack().isOf(Items.BEEF)) {
+                    user.setStackInHand(Hand.OFF_HAND, Items.COOKED_BEEF.getDefaultStack());
+                } else if (user.getOffHandStack().isOf(Items.COAL_ORE)) {
+                    user.setStackInHand(Hand.OFF_HAND, Items.COAL.getDefaultStack());
+                } else if (user.getOffHandStack().isOf(Items.COPPER_ORE)) {
+                    user.setStackInHand(Hand.OFF_HAND, Items.COPPER_INGOT.getDefaultStack());
+                } else if (user.getOffHandStack().isOf(Items.IRON_ORE)) {
+                    user.setStackInHand(Hand.OFF_HAND, Items.IRON_INGOT.getDefaultStack());
+                } else if (user.getOffHandStack().isOf(Items.GOLD_ORE)) {
+                    user.setStackInHand(Hand.OFF_HAND, Items.GOLD_INGOT.getDefaultStack());
+                } else if (user.getOffHandStack().isOf(Items.DIAMOND_ORE)) {
+                    user.setStackInHand(Hand.OFF_HAND, Items.DIAMOND.getDefaultStack());
+                } else if (user.getOffHandStack().isOf(Items.EMERALD_ORE)) {
+                    user.setStackInHand(Hand.OFF_HAND, Items.EMERALD.getDefaultStack());
+                } else if (user.getOffHandStack().isOf(Items.LAPIS_ORE)) {
+                    user.setStackInHand(Hand.OFF_HAND, Items.LAPIS_LAZULI.getDefaultStack());
+                }
+                user.getOffHandStack().setCount(count);
+            } else if (hasBlocks(user.getMainHandStack(), Items.BREWING_STAND)) {
+                Random rand = new Random();
+                int p = rand.nextInt(16);
+                Potion potion = potionChoose(p);
+                PotionEntity potionEntity = new PotionEntity(world, user);
+                potionEntity.setItem(PotionUtil.setPotion(new ItemStack(Items.SPLASH_POTION), potion));
+                potionEntity.setVelocity(user, user.getPitch(), user.getYaw(), -20.0f, 0.5f, 1.0f);
+                world.spawnEntity(potionEntity);
+            } else if (hasBlocks(user.getMainHandStack(), Items.MAGMA_BLOCK)) {
+                FireballEntity fireball = new FireballEntity(world, user, 0, 0, 0, 1);
+                fireball.setVelocity(user, user.getPitch(), user.getYaw(), -20.0f, 2.5f, 0.0f);
+                world.spawnEntity(fireball);
+            } else if (hasBlocks(user.getMainHandStack(), Items.TNT)) {
+                TntEntity tnt = new TntEntity(EntityType.TNT, world);
+                float f = -MathHelper.sin(user.getYaw() * 0.017453292F) * MathHelper.cos(user.getPitch() * 0.017453292F);
+                float g = -MathHelper.sin((user.getPitch() + -20.0f) * 0.017453292F);
+                float h = MathHelper.cos(user.getYaw() * 0.017453292F) * MathHelper.cos(user.getPitch() * 0.017453292F);
+                Vec3d vec3d = (new Vec3d(f, g, h)).normalize().add(user.getRandom().nextTriangular(0.0, 0.0172275 * 1.0), user.getRandom().nextTriangular(0.0, 0.0172275 * 1.0), user.getRandom().nextTriangular(0.0, 0.0172275 * 1.0)).multiply(0.5);
+                tnt.setVelocity(vec3d);
+                double d = vec3d.horizontalLength();
+                tnt.setYaw((float) (MathHelper.atan2(vec3d.x, vec3d.z) * 57.2957763671875));
+                tnt.setPitch((float) (MathHelper.atan2(vec3d.y, d) * 57.2957763671875));
+                tnt.prevYaw = tnt.getYaw();
+                tnt.prevPitch = tnt.getPitch();
+                Vec3d vec3d1 = user.getVelocity();
+                tnt.setVelocity(tnt.getVelocity().add(vec3d1.x, user.isOnGround() ? 0.0 : vec3d1.y, vec3d1.z));
+                tnt.setPos(user.getX(), user.getY() + 1, user.getZ());
+                world.spawnEntity(tnt);
+            } else if (hasBlocks(user.getMainHandStack(), Items.PISTON)) {
+                Vec3d vec3d = user.getVelocity();
+                user.setVelocity(vec3d.x, 1.5f, vec3d.z);
+            } else if (hasBlocks(user.getMainHandStack(), Items.SPAWNER)) {
+                Random rand = new Random();
+                int i = rand.nextInt(125);
+                Entity mob = Registries.ENTITY_TYPE.get(i).create(world);
+                if (i >= 121) {
+                    mob = ModEntities.CREEPER_BEE.create(world);
+                }
+                while (!(mob instanceof LivingEntity)) {
+                    mob = Registries.ENTITY_TYPE.get(rand.nextInt(120)).create(world);
+                }
+                mob.setPos(user.getX() + rand.nextFloat(-1, 1), user.getY() + 1, user.getZ() + rand.nextFloat(-1, 1));
+                world.spawnEntity(mob);
+            } else {
+                if (!getBlocks(user.getMainHandStack()).stream().allMatch(s -> s.isOf(Blocks.AIR.asItem()))) {
+                    if (getBlocks(user.getMainHandStack()).get(0).getItem() instanceof BlockItem) {
+                        BlockItem item = (BlockItem) getBlocks(user.getMainHandStack()).get(0).getItem();
+                        Block block = item.getBlock();
+                        for (int x = -3; x < 3; x++) {
+                            for (int y = -3; y < 3; y++) {
+                                for (int z = -3; z < 3; z++) {
+                                    if (!world.getBlockState(BlockPos.ofFloored(user.getX() + x, user.getY() + y, user.getZ() + z)).isOf(Blocks.AIR)) {
+                                        world.setBlockState(BlockPos.ofFloored(user.getX() + x, user.getY() + y, user.getZ() + z), block.getDefaultState());
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+            user.getItemCooldownManager().set(this, getUseDuration(user.getStackInHand(hand)));
         }
-        user.getItemCooldownManager().set(this, getUseDuration(user.getStackInHand(hand)));
-        return TypedActionResult.fail(user.getMainHandStack());
+        return user.getMainHandStack().isOf(ModItem.POWERFUL_STAFF) ? TypedActionResult.pass(user.getMainHandStack()) : TypedActionResult.pass(user.getOffHandStack());
     }
 
     @Override
@@ -458,7 +438,7 @@ public class PowerfulStaffItem extends ToolItem {
         context.getPlayer().getItemCooldownManager().set(this, getUseDuration(context.getStack()));
         return ActionResult.PASS;
     }
-    public static boolean useOnFertilizable(ItemStack stack, World world, BlockPos pos) {
+    public boolean useOnFertilizable(ItemStack stack, World world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         Block var5 = blockState.getBlock();
         if (var5 instanceof Fertilizable fertilizable) {
@@ -467,16 +447,13 @@ public class PowerfulStaffItem extends ToolItem {
                     if (fertilizable.canGrow(world, world.random, pos, blockState)) {
                         fertilizable.grow((ServerWorld)world, world.random, pos, blockState);
                     }
-
-                    stack.decrement(1);
                 }
-
                 return true;
             }
         }
         return false;
     }
-    public static boolean useOnGround(ItemStack stack, World world, BlockPos blockPos, @Nullable Direction facing) {
+    public boolean useOnGround(ItemStack stack, World world, BlockPos blockPos, @Nullable Direction facing) {
         if (!world.getBlockState(blockPos).isOf(Blocks.WATER) || world.getFluidState(blockPos).getLevel() != 8) {
             return false;
         }
@@ -632,12 +609,12 @@ public class PowerfulStaffItem extends ToolItem {
         CommandDispatcher<ServerCommandSource> commandDispatcher = server.getCommandManager().getDispatcher();
         return commandDispatcher.parse(command, player.getCommandSource());
     }
-    private static Optional<ItemStack> removeFirstStack(ItemStack stack) {
+    private Optional<ItemStack> removeFirstStack(ItemStack stack) {
         NbtCompound nbtCompound = stack.getOrCreateNbt();
         if (!nbtCompound.contains(ITEMS_KEY)) {
             return Optional.empty();
         }
-        PowerfulStaffItem.setBlocked(stack, false);
+        setBlocked(stack, false);
         NbtList nbtList = nbtCompound.getList(ITEMS_KEY, NbtElement.COMPOUND_TYPE);
         if (nbtList.isEmpty()) {
             return Optional.empty();
@@ -739,7 +716,7 @@ public class PowerfulStaffItem extends ToolItem {
         }
         return true;
     }
-    private static int addToBundle(ItemStack bundle, ItemStack stack) {
+    private int addToBundle(ItemStack bundle, ItemStack stack) {
         if (stack.isEmpty() || !stack.getItem().canBeNested()) {
             return 0;
         }
@@ -770,7 +747,7 @@ public class PowerfulStaffItem extends ToolItem {
         }
         return k;
     }
-    private static int getItemOccupancy(ItemStack stack) {
+    private int getItemOccupancy(ItemStack stack) {
         NbtCompound nbtCompound;
         if (stack.isOf(Items.BUNDLE)) {
             return 4 + getBundleOccupancy(stack);
@@ -786,17 +763,17 @@ public class PowerfulStaffItem extends ToolItem {
         this.getBundledStacks(stack).forEach(defaultedList::add);
         return Optional.of(new BundleTooltipData(defaultedList, this.getBundleOccupancy(stack)));
     }
-    private static Optional<NbtCompound> canMergeStack(ItemStack stack, NbtList items) {
+    private Optional<NbtCompound> canMergeStack(ItemStack stack, NbtList items) {
         if (stack.isOf(Items.BUNDLE)) {
             return Optional.empty();
         }
         return items.stream().filter(NbtCompound.class::isInstance).map(NbtCompound.class::cast).filter(item -> ItemStack.canCombine(ItemStack.fromNbt(item), stack)).findFirst();
     }
-    private static int getBundleOccupancy(ItemStack stack) {
+    private int getBundleOccupancy(ItemStack stack) {
         return getBundledStacks(stack).mapToInt(itemStack ->
                 getItemOccupancy(itemStack) * itemStack.getCount()).sum();
     }
-    public static Stream<ItemStack> getBundledStacks(ItemStack stack) {
+    public Stream<ItemStack> getBundledStacks(ItemStack stack) {
         NbtCompound nbtCompound = stack.getNbt();
         if (nbtCompound == null) {
             return Stream.empty();
@@ -826,23 +803,7 @@ public class PowerfulStaffItem extends ToolItem {
     private boolean hasBlocks(ItemStack staff, Item block) {
         return getBlocks(staff).stream().anyMatch(s -> s.isOf(block));
     }
-    public static boolean hasAnotherBlocks(ItemStack staff, Item block){
-        NbtList nbtList;
-        ArrayList<ItemStack> list = Lists.newArrayList();
-        NbtCompound nbtCompound = staff.getNbt();
-        if (nbtCompound != null && nbtCompound.contains(ITEMS_KEY, NbtElement.LIST_TYPE) && (nbtList = nbtCompound.getList(ITEMS_KEY, NbtElement.COMPOUND_TYPE)) != null) {
-            for (int i = 0; i < nbtList.size(); ++i) {
-                NbtCompound nbtCompound2 = nbtList.getCompound(i);
-                list.add(ItemStack.fromNbt(nbtCompound2));
-            }
-        }
-        return list.stream().anyMatch(s -> s.isOf(block));
-    }
-    public static boolean isBlocked(ItemStack stack) {
-        NbtCompound nbtCompound = stack.getNbt();
-        return nbtCompound != null && nbtCompound.getBoolean(BLOCKED_KEY);
-    }
-    public static void setBlocked(ItemStack stack, boolean blocked) {
+    public void setBlocked(ItemStack stack, boolean blocked) {
         NbtCompound nbtCompound = stack.getOrCreateNbt();
         nbtCompound.putBoolean(BLOCKED_KEY, blocked);
         if(nbtCompound.getBoolean(BLOCKED_KEY) == false){
