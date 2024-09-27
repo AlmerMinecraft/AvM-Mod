@@ -18,7 +18,7 @@
       "item": "avm_mod:titan_ravager_horn"
     },
     "*": {
-      "item": "minecraft:dragon_egg"
+      "item": "minecraft:spawner"
     }
   },
   "pattern": [

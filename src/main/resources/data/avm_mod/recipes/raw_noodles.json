@@ -3,14 +3,11 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "minecraft:wheat"
-    },
-    {
-      "item": "minecraft:wheat"
+      "item": "avm_mod:batter"
     }
   ],
   "result": {
-    "item": "avm_mod:flour"
+    "item": "avm_mod:raw_noodles"
   },
   "show_notification": true
 }

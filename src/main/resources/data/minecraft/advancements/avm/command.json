@@ -7,7 +7,7 @@
           "items": [
             "avm_mod:staff"
           ],
-          "nbt": "{Block:[{id:\"minecraft:command_block\", Count:1b}]}"
+          "nbt": "{Block:[{id:\"avm_mod:game_icon\", Count:1b}]}"
         }
       },
       "trigger": "minecraft:using_item"

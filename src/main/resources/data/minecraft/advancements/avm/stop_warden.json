@@ -13,6 +13,10 @@
                 "horizontal": {
                   "min": 0.5,
                   "max": 40.0
+                },
+                "vertical": {
+                  "min": 0.5,
+                  "max": 10.0
                 }
               }
             }

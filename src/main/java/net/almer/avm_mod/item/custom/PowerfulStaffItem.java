@@ -212,7 +212,7 @@ public class PowerfulStaffItem extends ToolItem {
                 index = 0;
             }
             if(!player.getAbilities().creativeMode) {
-                if (player.getMainHandStack().isOf(ModItem.GAME_ICON) && currentMode == 1) {
+                if (currentMode == 1) {
                     player.getAbilities().allowFlying = true;
                 } else {
                     player.getAbilities().flying = false;
@@ -238,25 +238,27 @@ public class PowerfulStaffItem extends ToolItem {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         if(!user.getOffHandStack().isOf(ModItem.POWERFUL_STAFF)) {
-            if (hasBlocks(user.getMainHandStack(), Items.COMMAND_BLOCK) && user.isCreativeLevelTwoOp()) {
-                if (AvMModClient.POWERFUL_STAFF_USE.isPressed()) {
-                    PowerfulStaffScreen screen = new PowerfulStaffScreen(this.staff);
-                    MinecraftClient.getInstance().setScreenAndRender(screen);
-                    screen.addPlayer(user);
-                    screen.addCommands(bufferedCommands);
-                    NbtCompound nbtCompound = this.staff.getOrCreateNbt();
-                    if (!nbtCompound.contains("Commands")) {
-                        nbtCompound.put("Commands", new NbtList());
-                    }
-                    this.commandList = nbtCompound.getList("Commands", NbtElement.COMPOUND_TYPE);
-                    TypedActionResult.success(user.getMainHandStack());
-                } else {
-                    if (currentCommand != "" && !AvMModClient.POWERFUL_STAFF_USE.isPressed()) {
-                        if (currentCommand.startsWith("/")) {
-                            String readyCommand = currentCommand.substring(1);
-                            MinecraftClient.getInstance().player.networkHandler.sendChatCommand(readyCommand);
-                        } else {
-                            MinecraftClient.getInstance().player.networkHandler.sendChatCommand(currentCommand);
+            if (hasBlocks(user.getMainHandStack(), Items.COMMAND_BLOCK)) {
+                if(user.isCreativeLevelTwoOp()) {
+                    if (AvMModClient.POWERFUL_STAFF_USE.isPressed()) {
+                        PowerfulStaffScreen screen = new PowerfulStaffScreen(this.staff);
+                        MinecraftClient.getInstance().setScreenAndRender(screen);
+                        screen.addPlayer(user);
+                        screen.addCommands(bufferedCommands);
+                        NbtCompound nbtCompound = this.staff.getOrCreateNbt();
+                        if (!nbtCompound.contains("Commands")) {
+                            nbtCompound.put("Commands", new NbtList());
+                        }
+                        this.commandList = nbtCompound.getList("Commands", NbtElement.COMPOUND_TYPE);
+                        TypedActionResult.success(user.getMainHandStack());
+                    } else {
+                        if (currentCommand != "" && !AvMModClient.POWERFUL_STAFF_USE.isPressed()) {
+                            if (currentCommand.startsWith("/")) {
+                                String readyCommand = currentCommand.substring(1);
+                                MinecraftClient.getInstance().player.networkHandler.sendChatCommand(readyCommand);
+                            } else {
+                                MinecraftClient.getInstance().player.networkHandler.sendChatCommand(currentCommand);
+                            }
                         }
                     }
                 }
@@ -311,8 +313,6 @@ public class PowerfulStaffItem extends ToolItem {
                                 list.set(i, placeholder);
                                 remains = 10;
                                 index = 0;
-                            } else {
-                                user.sendMessage(Text.translatable("gui.avm_mod.fail_summon_empty"), true);
                             }
                         }
                     }
